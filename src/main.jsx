@@ -162,7 +162,7 @@ function App() {
     }
     document.title = route.title;
     setMeta('description', route.description);
-    setCanonical(`https://lifts-uprm.github.io${route.path === '/' ? '/' : route.path}`);
+    setCanonical(`https://liftspr.org${route.path === '/' ? '/' : route.path}`);
   }, [route, isAdmin]);
 
   useEffect(() => {

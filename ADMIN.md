@@ -8,7 +8,7 @@ and changes appear on the live site immediately.
 
 ## First-time setup (do this once)
 
-1. Go to `https://lifts-uprm.github.io/admin`, click **"New member? Request access"**,
+1. Go to `https://liftspr.org/admin`, click **"New member? Request access"**,
    and create your account. **The very first account to sign up automatically becomes
    the admin.** Sign up before sharing the link with the team.
 2. Confirm your email if prompted (check spam). Then log in.
