@@ -13,6 +13,10 @@ and changes appear on the live site immediately.
    the admin.** Sign up before sharing the link with the team.
 2. Confirm your email if prompted (check spam). Then log in.
 
+The LIFTS-branded Supabase confirmation email template is stored at
+`public/assets/email/confirm-signup.html`. Paste that HTML into the Supabase
+confirm-signup email template when configuring the auth emails for this website.
+
 ## How roles work
 
 | Role | Can do |

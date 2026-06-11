@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="color-scheme" content="dark">
+  <meta name="supported-color-schemes" content="dark">
+  <title>Confirm your email - LIFTS</title>
+  <style>
+    @media only screen and (max-width: 600px) {
+      .email-wrapper { padding: 24px 14px !important; }
+      .email-card { padding: 34px 24px !important; border-radius: 28px !important; }
+      .brand-logo { width: 154px !important; }
+      .headline { font-size: 24px !important; }
+      .cta-btn { padding: 18px 18px !important; }
+    }
+  </style>
+</head>
+<body style="margin:0;padding:0;background:#000000;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#ffffff;">
+  <span style="display:none;max-height:0;overflow:hidden;mso-hide:all;">
+    Confirm your LIFTS website account email address to access the content panel.
+  </span>
+
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="email-wrapper" style="min-height:100vh;background:#000000;padding:54px 24px;">
+    <tr>
+      <td align="center" valign="middle">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:658px;">
+          <tr>
+            <td class="email-card" style="background:#111111;border:1px solid #333333;border-radius:36px;padding:42px 38px;box-shadow:0 28px 60px rgba(0,0,0,0.32);">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td align="center" style="padding-bottom:20px;">
+                    <img
+                      class="brand-logo"
+                      src="https://lifts-uprm.github.io/images/logo/lifts-logo-white.svg"
+                      width="176"
+                      alt="LIFTS"
+                      style="display:block;width:176px;max-width:60%;height:auto;border:0;outline:none;text-decoration:none;"
+                    >
+                  </td>
+                </tr>
+
+                <tr>
+                  <td align="center" style="padding-bottom:8px;">
+                    <h1 class="headline" style="margin:0;color:#ffffff;font-size:30px;font-weight:700;line-height:1.15;letter-spacing:0;">
+                      Confirm your email
+                    </h1>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td align="center" style="padding-bottom:28px;">
+                    <p style="margin:0;max-width:480px;color:rgba(255,255,255,0.78);font-size:15px;line-height:1.6;">
+                      Verify this email address to activate your LIFTS website account. After confirmation, an admin can approve access to the content panel.
+                    </p>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td align="center" style="padding-bottom:24px;">
+                    <!--[if mso]>
+                    <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" href="{{ .ConfirmationURL }}" style="height:64px;v-text-anchor:middle;width:582px;" arcsize="20%" strokecolor="#ffffff" fillcolor="#ffffff">
+                      <w:anchorlock/>
+                      <center style="color:#000000;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:16px;font-weight:700;">Confirm email address</center>
+                    </v:roundrect>
+                    <![endif]-->
+                    <!--[if !mso]><!-->
+                    <a href="{{ .ConfirmationURL }}" class="cta-btn" style="display:block;width:100%;box-sizing:border-box;background:#ffffff;border:1px solid #ffffff;border-radius:18px;color:#000000;font-size:16px;font-weight:700;line-height:1.2;text-align:center;text-decoration:none;padding:22px 24px;box-shadow:0 14px 28px rgba(0,0,0,0.22);">
+                      Confirm email address
+                    </a>
+                    <!--<![endif]-->
+                  </td>
+                </tr>
+
+                <tr>
+                  <td align="center" style="padding-bottom:18px;">
+                    <p style="margin:0;color:rgba(255,255,255,0.58);font-size:13px;line-height:1.55;">
+                      If the button does not open, copy and paste this link into your browser.
+                    </p>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td style="background:#1a1a1a;border:1px solid #444444;border-radius:10px;padding:12px 14px;">
+                    <p style="margin:0;color:#00b0ff;font-size:12px;line-height:1.55;word-break:break-all;text-align:center;">
+                      {{ .ConfirmationURL }}
+                    </p>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td align="center" style="padding-top:20px;">
+                    <p style="margin:0;color:rgba(255,255,255,0.46);font-size:12px;line-height:1.6;">
+                      If you did not request access to the LIFTS website content panel, you can safely ignore this email.
+                    </p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <tr>
+            <td align="center" style="padding-top:22px;">
+              <p style="margin:0;color:rgba(255,255,255,0.36);font-size:11px;line-height:1.6;">
+                &copy; 2026 LIFTS &middot; Launch Initiatives for Technologies in Space &middot; UPRM
+              </p>
+              <p style="margin:8px 0 0;color:rgba(255,255,255,0.28);font-size:11px;line-height:1.6;">
+                <a href="mailto:lifts@upr.edu" style="color:rgba(255,255,255,0.5);text-decoration:none;">lifts@upr.edu</a>
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

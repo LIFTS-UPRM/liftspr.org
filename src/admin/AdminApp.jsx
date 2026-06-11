@@ -286,15 +286,52 @@ function PendingScreen({ profile }) {
 // ---------------------------------------------------------------------------
 // Main panel
 // ---------------------------------------------------------------------------
+const ICONS = {
+  dashboard: <><rect x="3" y="3" width="7" height="7" rx="1.5" /><rect x="14" y="3" width="7" height="7" rx="1.5" /><rect x="3" y="14" width="7" height="7" rx="1.5" /><rect x="14" y="14" width="7" height="7" rx="1.5" /></>,
+  posts: <><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><path d="M14 2v6h6" /><path d="M8 13h8M8 17h5" /></>,
+  missions: <><path d="M22 2 11 13" /><path d="M22 2 15 22l-4-9-9-4z" /></>,
+  site: <><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3" /><path d="M1 14h6M9 8h6M17 16h6" /></>,
+  gallery: <><rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><path d="m21 15-5-5L5 21" /></>,
+  approvals: <><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><path d="M22 4 12 14.01l-3-3" /></>,
+  members: <><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></>,
+};
+
+function Icon({ name }) {
+  return (
+    <svg className="admin-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"
+      strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      {ICONS[name]}
+    </svg>
+  );
+}
+
 function Panel({ profile }) {
   const isAdmin = profile.role === 'admin';
-  const [tab, setTab] = useState('posts');
+  const [tab, setTab] = useState('dashboard');
   const [toast, setToast] = useState(null);
+  const [counts, setCounts] = useState({});
 
   const notify = useCallback((text, ok = true) => {
     setToast({ text, ok });
     window.setTimeout(() => setToast(null), 5000);
   }, []);
+
+  const loadCounts = useCallback(async () => {
+    const head = { count: 'exact', head: true };
+    const [posts, missions, gallery, pending, members] = await Promise.all([
+      supabase.from('posts').select('id', head),
+      supabase.from('missions').select('id', head),
+      supabase.from('gallery').select('id', head),
+      supabase.from('pending_changes').select('id', head).eq('status', 'pending'),
+      isAdmin ? supabase.from('profiles').select('id', head) : Promise.resolve({ count: null }),
+    ]);
+    setCounts({
+      posts: posts.count, missions: missions.count, gallery: gallery.count,
+      pending: pending.count, members: members.count,
+    });
+  }, [isAdmin]);
+
+  useEffect(() => { loadCounts(); }, [loadCounts, tab]);
 
   // Admins write live content immediately; editors queue a change for review.
   const save = useCallback(async (change) => {
@@ -307,42 +344,146 @@ function Panel({ profile }) {
     }
   }, [isAdmin, profile.id, notify]);
 
-  const tabs = [
-    ['posts', 'Posts'],
-    ['missions', 'Missions'],
-    ['site', 'Site Info'],
-    ['gallery', 'Gallery'],
-    ['approvals', isAdmin ? 'Approvals' : 'My Submissions'],
-    ...(isAdmin ? [['members', 'Members']] : []),
+  const nav = [
+    ['dashboard', 'Dashboard', 'dashboard'],
+    ['posts', 'Posts', 'posts'],
+    ['missions', 'Missions', 'missions'],
+    ['site', 'Site Info', 'site'],
+    ['gallery', 'Gallery', 'gallery'],
+    ['approvals', isAdmin ? 'Approvals' : 'My Submissions', 'approvals'],
+    ...(isAdmin ? [['members', 'Members', 'members']] : []),
+  ];
+
+  const initials = (profile.display_name || profile.email || '?')
+    .split(/[\s@._-]+/).filter(Boolean).slice(0, 2).map((part) => part[0].toUpperCase()).join('');
+
+  return (
+    <div className="admin-shell admin-layout">
+      <aside className="admin-sidebar">
+        <a href="/" className="admin-logo" title="View live site">
+          <img src="/images/logo/lifts-icon.svg" alt="LIFTS" />
+          <span>Content Panel</span>
+        </a>
+        <nav className="admin-nav">
+          {nav.map(([key, label, icon]) => (
+            <button key={key} className={`admin-nav-item ${tab === key ? 'active' : ''}`} onClick={() => setTab(key)}>
+              <Icon name={icon} />
+              <span>{label}</span>
+              {key === 'approvals' && counts.pending > 0 && (
+                <span className="admin-badge">{counts.pending}</span>
+              )}
+            </button>
+          ))}
+        </nav>
+        <div className="admin-sidebar-footer">
+          <div className="admin-avatar">{initials}</div>
+          <div className="admin-user-meta">
+            <strong>{profile.display_name || profile.email}</strong>
+            <span className={`admin-role admin-role-${profile.role}`}>{profile.role}</span>
+          </div>
+          <button className="admin-btn admin-btn-sm" onClick={() => supabase.auth.signOut()} title="Sign out">↩</button>
+        </div>
+      </aside>
+      <div className="admin-content">
+        <main className="admin-main">
+          {tab === 'dashboard' && <DashboardTab profile={profile} isAdmin={isAdmin} counts={counts} setTab={setTab} />}
+          {tab === 'posts' && <PostsTab save={save} isAdmin={isAdmin} notify={notify} />}
+          {tab === 'missions' && <MissionsTab save={save} isAdmin={isAdmin} notify={notify} />}
+          {tab === 'site' && <SiteInfoTab save={save} notify={notify} />}
+          {tab === 'gallery' && <GalleryTab save={save} isAdmin={isAdmin} notify={notify} />}
+          {tab === 'approvals' && <ApprovalsTab isAdmin={isAdmin} profile={profile} notify={notify} />}
+          {tab === 'members' && isAdmin && <MembersTab notify={notify} />}
+        </main>
+      </div>
+      {toast && <div className={`admin-toast ${toast.ok ? '' : 'admin-toast-error'}`}>{toast.text}</div>}
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Dashboard overview
+// ---------------------------------------------------------------------------
+function DashboardTab({ profile, isAdmin, counts, setTab }) {
+  const [recent, setRecent] = useState([]);
+
+  useEffect(() => {
+    supabase.from('pending_changes').select('*').eq('status', 'pending')
+      .order('submitted_at', { ascending: false }).limit(5)
+      .then(({ data }) => setRecent(data || []));
+  }, []);
+
+  const firstName = (profile.display_name || profile.email || '').split(/[\s@]+/)[0];
+  const stats = [
+    ['posts', 'Posts', counts.posts, 'posts'],
+    ['missions', 'Missions', counts.missions, 'missions'],
+    ['gallery', 'Photos', counts.gallery, 'gallery'],
+    ['approvals', isAdmin ? 'Pending Review' : 'My Pending', counts.pending, 'approvals'],
+    ...(isAdmin ? [['members', 'Members', counts.members, 'members']] : []),
   ];
 
   return (
-    <div className="admin-shell">
-      <header className="admin-header">
-        <a href="/" className="admin-logo"><img src="/images/logo/lifts-logo-white.svg" alt="LIFTS" /></a>
-        <span className="admin-header-title">Content Panel</span>
-        <div className="admin-header-user">
-          <span>{profile.display_name || profile.email} · {profile.role}</span>
-          <button className="admin-btn admin-btn-sm" onClick={() => supabase.auth.signOut()}>Sign Out</button>
+    <section>
+      <div className="admin-dash-head">
+        <div>
+          <h2>Welcome back, {firstName}</h2>
+          <p className="admin-muted">
+            {isAdmin
+              ? 'Everything you publish here goes live on the site immediately.'
+              : 'Your edits are sent to an admin for review before going live.'}
+          </p>
         </div>
-      </header>
-      <nav className="admin-tabs">
-        {tabs.map(([key, label]) => (
-          <button key={key} className={`admin-tab ${tab === key ? 'active' : ''}`} onClick={() => setTab(key)}>
-            {label}
+        <a className="admin-btn" href="/" target="_blank" rel="noreferrer">View Live Site ↗</a>
+      </div>
+
+      <div className="admin-stat-grid">
+        {stats.map(([icon, label, value, target]) => (
+          <button key={label} className="admin-stat-card" onClick={() => setTab(target)}>
+            <Icon name={icon} />
+            <span className="admin-stat-value">{value ?? '—'}</span>
+            <span className="admin-stat-label">{label}</span>
           </button>
         ))}
-      </nav>
-      <main className="admin-main">
-        {tab === 'posts' && <PostsTab save={save} isAdmin={isAdmin} notify={notify} />}
-        {tab === 'missions' && <MissionsTab save={save} isAdmin={isAdmin} notify={notify} />}
-        {tab === 'site' && <SiteInfoTab save={save} notify={notify} />}
-        {tab === 'gallery' && <GalleryTab save={save} isAdmin={isAdmin} notify={notify} />}
-        {tab === 'approvals' && <ApprovalsTab isAdmin={isAdmin} profile={profile} notify={notify} />}
-        {tab === 'members' && isAdmin && <MembersTab notify={notify} />}
-      </main>
-      {toast && <div className={`admin-toast ${toast.ok ? '' : 'admin-toast-error'}`}>{toast.text}</div>}
-    </div>
+      </div>
+
+      <h3 className="admin-subhead">Quick actions</h3>
+      <div className="admin-quick-grid">
+        <button className="admin-quick" onClick={() => setTab('posts')}>
+          <Icon name="posts" /><span>Write a post</span>
+          <small>Share news or a mission update</small>
+        </button>
+        <button className="admin-quick" onClick={() => setTab('gallery')}>
+          <Icon name="gallery" /><span>Add photos</span>
+          <small>Upload shots from the field</small>
+        </button>
+        <button className="admin-quick" onClick={() => setTab('missions')}>
+          <Icon name="missions" /><span>Update a mission</span>
+          <small>Status, dates, specs, results</small>
+        </button>
+        <button className="admin-quick" onClick={() => setTab('site')}>
+          <Icon name="site" /><span>Edit site info</span>
+          <small>Stats, sponsors, FAQ, contact</small>
+        </button>
+      </div>
+
+      {recent.length > 0 && (
+        <>
+          <h3 className="admin-subhead">{isAdmin ? 'Waiting for your review' : 'Your pending submissions'}</h3>
+          <div className="admin-list">
+            {recent.map((change) => (
+              <div className="admin-row" key={change.id}>
+                <div>
+                  <strong>{change.summary || `${change.action} ${change.target_type}`}</strong>
+                  <p className="admin-muted">{new Date(change.submitted_at).toLocaleString()}</p>
+                </div>
+                <button className="admin-btn admin-btn-sm" onClick={() => setTab('approvals')}>
+                  {isAdmin ? 'Review' : 'View'}
+                </button>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+    </section>
   );
 }
 
