@@ -54,8 +54,13 @@ the Supabase dashboard:
 - `RESEND_AUDIENCE_ID` — from resend.com → Audiences → your audience → ID
 
 If the secrets are missing, signups are still saved to the database
-(`synced_to_resend = false`) so no subscriber is ever lost. Send broadcasts from
-resend.com → Broadcasts to that audience.
+(`synced_to_resend = false`) so no subscriber is ever lost.
+
+Admins send newsletters from the panel's **Newsletter** tab: write a subject and
+message, and it goes to every active subscriber in the LIFTS email template with an
+automatic unsubscribe link (via the `broadcast` edge function). The sender address
+defaults to `LIFTS <noreply@auth.liftspr.org>`; override it with a `RESEND_FROM`
+secret if you verify a nicer address (e.g. `news@liftspr.org`).
 
 ## Notes & limits
 

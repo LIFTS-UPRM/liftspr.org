@@ -294,6 +294,7 @@ const ICONS = {
   gallery: <><rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><path d="m21 15-5-5L5 21" /></>,
   approvals: <><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><path d="M22 4 12 14.01l-3-3" /></>,
   members: <><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></>,
+  newsletter: <><rect x="2" y="4" width="20" height="16" rx="2" /><path d="m22 7-10 6L2 7" /></>,
 };
 
 function Icon({ name }) {
@@ -351,7 +352,7 @@ function Panel({ profile }) {
     ['site', 'Site Info', 'site'],
     ['gallery', 'Gallery', 'gallery'],
     ['approvals', isAdmin ? 'Approvals' : 'My Submissions', 'approvals'],
-    ...(isAdmin ? [['members', 'Members', 'members']] : []),
+    ...(isAdmin ? [['newsletter', 'Newsletter', 'newsletter'], ['members', 'Members', 'members']] : []),
   ];
 
   const initials = (profile.display_name || profile.email || '?')
@@ -392,6 +393,7 @@ function Panel({ profile }) {
           {tab === 'site' && <SiteInfoTab save={save} notify={notify} />}
           {tab === 'gallery' && <GalleryTab save={save} isAdmin={isAdmin} notify={notify} />}
           {tab === 'approvals' && <ApprovalsTab isAdmin={isAdmin} profile={profile} notify={notify} />}
+          {tab === 'newsletter' && isAdmin && <NewsletterTab notify={notify} />}
           {tab === 'members' && isAdmin && <MembersTab profile={profile} notify={notify} />}
         </main>
       </div>
@@ -463,6 +465,12 @@ function DashboardTab({ profile, isAdmin, counts, setTab }) {
           <Icon name="site" /><span>Edit site info</span>
           <small>Stats, sponsors, FAQ, contact</small>
         </button>
+        {isAdmin && (
+          <button className="admin-quick" onClick={() => setTab('newsletter')}>
+            <Icon name="newsletter" /><span>Send a newsletter</span>
+            <small>Broadcast to your subscribers</small>
+          </button>
+        )}
       </div>
 
       {recent.length > 0 && (
@@ -1161,6 +1169,107 @@ function ApprovalsTab({ isAdmin, profile, notify }) {
                   <strong>{change.summary}</strong>
                   <p className="admin-muted">
                     {change.status} · {change.reviewed_at ? new Date(change.reviewed_at).toLocaleString() : ''}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+    </section>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Newsletter broadcasts (admin only)
+// ---------------------------------------------------------------------------
+function NewsletterTab({ notify }) {
+  const [info, setInfo] = useState(null); // null = loading, { contacts, broadcasts } or { error }
+  const [subject, setSubject] = useState('');
+  const [body, setBody] = useState('');
+  const [sending, setSending] = useState(false);
+
+  const load = useCallback(async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke('broadcast', { body: { action: 'list' } });
+      setInfo(error ? { error: error.message } : data);
+    } catch (err) {
+      setInfo({ error: err.message });
+    }
+  }, []);
+
+  useEffect(() => { load(); }, [load]);
+
+  async function send() {
+    if (!subject.trim() || !body.trim()) {
+      notify('Subject and message are both required.', false);
+      return;
+    }
+    const audienceLabel = typeof info?.contacts === 'number' ? `${info.contacts} subscriber${info.contacts === 1 ? '' : 's'}` : 'all subscribers';
+    if (!window.confirm(`Send "${subject.trim()}" to ${audienceLabel} now? This cannot be undone.`)) return;
+    setSending(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('broadcast', {
+        body: { action: 'send', subject: subject.trim(), body: body.trim() },
+      });
+      if (error || data?.error) throw new Error(data?.error || error.message);
+      notify('Broadcast sent to your subscribers.');
+      setSubject('');
+      setBody('');
+      load();
+    } catch (err) {
+      notify(err.message, false);
+    } finally {
+      setSending(false);
+    }
+  }
+
+  const statusLabel = { sent: 'Sent', draft: 'Draft', queued: 'Sending…' };
+
+  return (
+    <section>
+      <div className="admin-section-head">
+        <h2>Newsletter</h2>
+        {typeof info?.contacts === 'number' && (
+          <span className="admin-muted">{info.contacts} active subscriber{info.contacts === 1 ? '' : 's'}</span>
+        )}
+      </div>
+
+      {info?.error ? <p className="admin-error">{info.error}</p> : null}
+
+      <div className="admin-card">
+        <div className="admin-form-grid">
+          <label className="admin-field admin-field-wide">
+            <span>Subject</span>
+            <input value={subject} onChange={(e) => setSubject(e.target.value)} placeholder="ASCENT launch date announced" />
+          </label>
+          <label className="admin-field admin-field-wide">
+            <span>Message (blank line starts a new paragraph)</span>
+            <textarea rows={10} value={body} onChange={(e) => setBody(e.target.value)}
+              placeholder={'Hi everyone,\n\nWe have news to share…'} />
+          </label>
+          <div className="admin-field-wide">
+            <button className="admin-btn admin-btn-primary" onClick={send} disabled={sending || !!info?.error}>
+              {sending ? 'Sending…' : 'Send Broadcast'}
+            </button>
+            <p className="admin-muted" style={{ marginTop: 10 }}>
+              Emails go out in the LIFTS template with an automatic unsubscribe link.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {info?.broadcasts?.length > 0 && (
+        <>
+          <h3 className="admin-subhead">Recent broadcasts</h3>
+          <div className="admin-list">
+            {info.broadcasts.map((broadcast) => (
+              <div className="admin-row" key={broadcast.id}>
+                <div>
+                  <strong>{broadcast.name || broadcast.subject || 'Untitled'}</strong>
+                  <p className="admin-muted">
+                    {statusLabel[broadcast.status] || broadcast.status}
+                    {broadcast.sent_at ? ` · ${new Date(broadcast.sent_at).toLocaleString()}` : ''}
                   </p>
                 </div>
               </div>
