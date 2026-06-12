@@ -392,7 +392,7 @@ function Panel({ profile }) {
           {tab === 'site' && <SiteInfoTab save={save} notify={notify} />}
           {tab === 'gallery' && <GalleryTab save={save} isAdmin={isAdmin} notify={notify} />}
           {tab === 'approvals' && <ApprovalsTab isAdmin={isAdmin} profile={profile} notify={notify} />}
-          {tab === 'members' && isAdmin && <MembersTab notify={notify} />}
+          {tab === 'members' && isAdmin && <MembersTab profile={profile} notify={notify} />}
         </main>
       </div>
       {toast && <div className={`admin-toast ${toast.ok ? '' : 'admin-toast-error'}`}>{toast.text}</div>}
@@ -1175,7 +1175,7 @@ function ApprovalsTab({ isAdmin, profile, notify }) {
 // ---------------------------------------------------------------------------
 // Members (admin only)
 // ---------------------------------------------------------------------------
-function MembersTab({ notify }) {
+function MembersTab({ profile, notify }) {
   const [members, refresh] = useTable('profiles', { column: 'created_at' });
 
   async function setRole(member, role) {
@@ -1185,6 +1185,21 @@ function MembersTab({ notify }) {
     } else {
       notify(`${member.display_name || member.email} is now ${role}.`);
       refresh();
+    }
+  }
+
+  async function deleteMember(member) {
+    const name = member.display_name || member.email;
+    if (!window.confirm(`Delete ${name}? Their account is removed permanently and they will no longer be able to log in.`)) return;
+    try {
+      const { data, error } = await supabase.functions.invoke('delete-member', {
+        body: { user_id: member.id },
+      });
+      if (error || data?.error) throw new Error(data?.error || error.message);
+      notify(`${name} has been deleted.`);
+      refresh();
+    } catch (err) {
+      notify(err.message, false);
     }
   }
 
@@ -1202,11 +1217,18 @@ function MembersTab({ notify }) {
               <strong>{member.display_name || member.email}</strong>
               <p className="admin-muted">{member.email}</p>
             </div>
-            <select value={member.role} onChange={(e) => setRole(member, e.target.value)}>
-              <option value="pending">pending</option>
-              <option value="editor">editor</option>
-              <option value="admin">admin</option>
-            </select>
+            <div className="admin-row-actions">
+              <select value={member.role} onChange={(e) => setRole(member, e.target.value)}>
+                <option value="pending">pending</option>
+                <option value="editor">editor</option>
+                <option value="admin">admin</option>
+              </select>
+              {member.id !== profile.id && (
+                <button className="admin-btn admin-btn-sm admin-btn-danger" onClick={() => deleteMember(member)}>
+                  Delete
+                </button>
+              )}
+            </div>
           </div>
         ))}
       </div>
