@@ -425,7 +425,7 @@ function getRemaining(targetDate) {
   };
 }
 
-function MissionCard({ mission, compact = false }) {
+function MissionCard({ mission }) {
   return (
     <article className="card">
       <div className="card-image">
@@ -436,7 +436,7 @@ function MissionCard({ mission, compact = false }) {
         <h3 className="card-title">{mission.name}</h3>
         <p className="card-label">{mission.date_display || mission.status_display} {mission.location ? `• ${mission.location}` : ''}</p>
         <p className="card-description">{mission.summary}</p>
-        {!compact ? <Link to={`/${mission.slug}`} className="btn btn-ghost">View Mission</Link> : null}
+        <Link to={`/${mission.slug}`} className="btn btn-ghost">View Mission</Link>
       </div>
     </article>
   );
@@ -916,7 +916,7 @@ function ContactPage() {
                 </div>
               ))}
             </div>
-            <form className="contact-form" data-validate onSubmit={handleSubmit}>
+            <form className="contact-form" onSubmit={handleSubmit}>
               <div className="form-group">
                 <label className="form-label" htmlFor="name">Name</label>
                 <input className="form-input" id="name" name="name" required />
