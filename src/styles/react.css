@@ -183,6 +183,37 @@
   text-decoration: underline;
 }
 
+.legal-content p {
+  margin-bottom: var(--spacing-md);
+}
+
+.legal-content h3 {
+  color: var(--color-text-primary);
+  margin: var(--spacing-lg) 0 var(--spacing-sm);
+  font-size: var(--text-lg);
+}
+
+.legal-content ul {
+  list-style: disc;
+  margin: 0 0 var(--spacing-md);
+  padding-left: var(--spacing-lg);
+}
+
+.legal-content li {
+  margin-bottom: var(--spacing-xs);
+}
+
+.legal-content strong {
+  color: var(--color-text-primary);
+}
+
+.legal-meta {
+  font-size: var(--text-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.7;
+}
+
 .date-month,
 .date-day,
 .date-year {

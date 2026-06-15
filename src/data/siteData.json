@@ -232,8 +232,8 @@
   ],
   "contact": {
     "general_email": "lifts@upr.edu",
-    "media_email": "media@lifts.uprm.edu",
-    "info_email": "info@lifts.uprm.edu",
+    "media_email": "lifts@upr.edu",
+    "info_email": "lifts@upr.edu",
     "cards": [
       {
         "title": "General",
@@ -242,12 +242,12 @@
       },
       {
         "title": "Media",
-        "value": "media@lifts.uprm.edu",
+        "value": "lifts@upr.edu",
         "description": "Press, interviews, and public communication."
       },
       {
         "title": "Partnerships",
-        "value": "info@lifts.uprm.edu",
+        "value": "lifts@upr.edu",
         "description": "Sponsors, research partners, and collaborators."
       }
     ]

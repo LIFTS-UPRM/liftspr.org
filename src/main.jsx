@@ -880,21 +880,38 @@ function ValueCard({ title, description }) {
 
 function ContactPage() {
   const siteData = useSiteData();
-  const [submitted, setSubmitted] = useState(false);
+  const [status, setStatus] = useState('idle'); // idle | sending | done | error
   const [error, setError] = useState('');
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
     const form = event.currentTarget;
+    const name = form.elements.name.value.trim();
     const email = form.elements.email.value.trim();
+    const topic = form.elements.topic.value.trim();
     const message = form.elements.message.value.trim();
-    if (!email.includes('@') || !message) {
-      setError('Please enter a valid email and message.');
+    if (!name || !email.includes('@') || !message) {
+      setError('Please enter your name, a valid email, and a message.');
+      setStatus('error');
       return;
     }
     setError('');
-    setSubmitted(true);
-    form.reset();
+    setStatus('sending');
+    try {
+      const { data, error: fnError } = await supabase.functions.invoke('contact', {
+        body: { name, email, topic, message },
+      });
+      if (fnError || data?.error) {
+        setError(data?.error || 'Something went wrong. Please try again or email us directly.');
+        setStatus('error');
+      } else {
+        setStatus('done');
+        form.reset();
+      }
+    } catch {
+      setError('Something went wrong. Please try again or email us directly.');
+      setStatus('error');
+    }
   }
 
   return (
@@ -938,9 +955,11 @@ function ContactPage() {
                 <label className="form-label" htmlFor="message">Message</label>
                 <textarea className="form-textarea" id="message" name="message" rows="6" required></textarea>
               </div>
-              {error ? <p className="form-error">{error}</p> : null}
-              {submitted ? <p className="form-success">Thanks. Please send this message directly by email if you need a reply quickly.</p> : null}
-              <button className="btn btn-primary" type="submit">Send Message</button>
+              {status === 'error' && error ? <p className="form-error">{error}</p> : null}
+              {status === 'done' ? <p className="form-success">Thanks for reaching out. Your message was sent to the LIFTS team and we&rsquo;ll reply to the email you provided.</p> : null}
+              <button className="btn btn-primary" type="submit" disabled={status === 'sending' || status === 'done'}>
+                {status === 'sending' ? 'Sending…' : status === 'done' ? 'Message Sent' : 'Send Message'}
+              </button>
             </form>
           </div>
         </div>
@@ -992,22 +1011,128 @@ function ContributorsPage() {
 
 function PrivacyPage() {
   const siteData = useSiteData();
+  const email = siteData.contact.general_email;
   return (
     <>
       <PageHero
         label="Privacy"
         title="Privacy Policy"
-        subtitle="How this website handles basic visitor and contact information."
+        subtitle="How LIFTS collects, uses, shares, and protects your personal information, and the rights you have over it."
       />
       <section className="section">
         <div className="container container-narrow">
           <div className="legal-content">
+            <p className="legal-meta">Last updated: June 14, 2026</p>
+
+            <h2>Introduction</h2>
+            <p>This Privacy Policy explains how LIFTS ("LIFTS," "we," "us," or "our"), a student organization based at the University of Puerto Rico at Mayag&uuml;ez (UPRM), collects, uses, discloses, and safeguards personal information when you visit this website, contact us, subscribe to our newsletter, or hold a member account. It also describes the choices and rights available to you.</p>
+            <p>We are committed to handling personal information responsibly and in line with applicable data protection laws, including the EU and UK General Data Protection Regulation (GDPR), the California Consumer Privacy Act as amended by the California Privacy Rights Act (CCPA/CPRA), the California Online Privacy Protection Act (CalOPPA), Canada&rsquo;s Personal Information Protection and Electronic Documents Act (PIPEDA), and Australia&rsquo;s Privacy Act 1988 and the Australian Privacy Principles (APPs).</p>
+            <p>If you do not agree with this Policy, please do not use the website or submit personal information to us.</p>
+
+            <h2>Who Is Responsible for Your Information</h2>
+            <p>LIFTS is the controller responsible for the personal information described in this Policy. For any privacy question or to exercise your rights, contact us at <a href={`mailto:${email}`}>{email}</a>. We do not currently operate in a jurisdiction that requires a designated Data Protection Officer or local representative; the contact above handles all privacy requests.</p>
+
             <h2>Information We Collect</h2>
-            <p>This website is a static informational site. If you contact LIFTS, the information you provide is used to respond to your message and coordinate relevant team activity.</p>
-            <h2>Third-Party Services</h2>
-            <p>The site may link to external services such as Instagram, LinkedIn, YouTube, and partner websites. Those services have their own privacy practices.</p>
-            <h2>Contact</h2>
-            <p>Questions about this policy can be sent to <a href={`mailto:${siteData.contact.general_email}`}>{siteData.contact.general_email}</a>.</p>
+            <h3>Information you provide to us</h3>
+            <ul>
+              <li><strong>Contact details and messages.</strong> When you email us or use the contact form, we receive the information you choose to share, such as your name, email address, the topic you select, and the contents of your message.</li>
+              <li><strong>Newsletter subscriptions.</strong> If you subscribe to our newsletter, we collect your email address in order to send you updates.</li>
+              <li><strong>Member accounts.</strong> If you are a LIFTS member with access to the member area, we process account information such as your name, email address, role, and related membership details.</li>
+            </ul>
+            <h3>Information collected automatically</h3>
+            <ul>
+              <li><strong>Technical and usage data.</strong> Like most websites, our hosting and backend providers automatically record limited technical information in server logs, which may include your IP address, browser and device type, referring pages, and the date and time of your request. This information helps us keep the site secure and operational.</li>
+              <li><strong>Local storage for sign-in.</strong> The member area uses your browser&rsquo;s local storage to keep you signed in during a session. We do not use advertising or third-party analytics cookies on the public website.</li>
+            </ul>
+            <p>We do not knowingly collect special categories of sensitive personal information, and we ask that you not send such information to us.</p>
+
+            <h2>How We Use Your Information</h2>
+            <ul>
+              <li>To respond to your inquiries and communicate with you.</li>
+              <li>To send the newsletter and other updates you have requested.</li>
+              <li>To create and administer member accounts and coordinate team activity.</li>
+              <li>To operate, maintain, secure, and improve the website.</li>
+              <li>To comply with legal obligations and protect our rights and the rights of others.</li>
+            </ul>
+            <p>We do not use your personal information to make automated decisions that produce legal or similarly significant effects about you.</p>
+
+            <h2>Legal Bases for Processing (GDPR / UK GDPR)</h2>
+            <p>If you are in the European Economic Area, the United Kingdom, or another region with similar laws, we rely on the following legal bases:</p>
+            <ul>
+              <li><strong>Consent</strong> &mdash; for example, when you subscribe to our newsletter. You may withdraw consent at any time.</li>
+              <li><strong>Performance of, or steps toward, a relationship</strong> &mdash; for example, administering your member account.</li>
+              <li><strong>Legitimate interests</strong> &mdash; such as responding to your messages, keeping the site secure, and operating our organization, where those interests are not overridden by your rights.</li>
+              <li><strong>Legal obligation</strong> &mdash; where we must process information to comply with the law.</li>
+            </ul>
+
+            <h2>How We Share Information</h2>
+            <p>We do not sell your personal information, and we do not share it for cross-context behavioral advertising or targeted advertising. We disclose personal information only in these limited circumstances:</p>
+            <ul>
+              <li><strong>Service providers.</strong> We use trusted vendors that process information on our behalf, including Supabase (database, authentication, and serverless functions), Resend (newsletter delivery and list management), and GitHub Pages (website hosting). These providers are bound by contract to use the information only to provide services to us.</li>
+              <li><strong>Legal and safety reasons.</strong> We may disclose information if required by law or to protect the rights, safety, or property of LIFTS, our members, or others.</li>
+              <li><strong>Organizational changes.</strong> Information may be transferred in connection with a reorganization of the student organization or its programs.</li>
+            </ul>
+
+            <h2>International Data Transfers</h2>
+            <p>Our service providers may store and process information in the United States and other countries that may have data protection laws different from those in your jurisdiction. Where required, we rely on appropriate safeguards, such as standard contractual clauses, to protect information transferred internationally.</p>
+
+            <h2>Data Retention</h2>
+            <p>We keep personal information only for as long as necessary for the purposes described in this Policy. Newsletter email addresses are retained until you unsubscribe; contact correspondence is kept as long as needed to address your request; and member account information is retained for the duration of your membership and a reasonable period afterward, unless a longer period is required by law.</p>
+
+            <h2>Data Security</h2>
+            <p>We use reasonable technical and organizational measures to protect personal information against unauthorized access, loss, or misuse. No method of transmission or storage is completely secure, however, and we cannot guarantee absolute security.</p>
+
+            <h2>Cookies, Do Not Track, and Global Privacy Control</h2>
+            <p>The public website does not use tracking or advertising cookies, and we do not permit third parties to collect personally identifiable information about your online activities across different websites when you use our site. Because we do not track you across third-party sites, browser &ldquo;Do Not Track&rdquo; and Global Privacy Control signals have no third-party tracking to disable; we honor recognized opt-out preference signals to the extent they apply to our processing.</p>
+
+            <h2>Your Privacy Rights</h2>
+            <p>Depending on where you live, you may have some or all of the rights below. We will not discriminate against you for exercising them.</p>
+            <h3>EEA / UK (GDPR)</h3>
+            <ul>
+              <li>Access a copy of your personal information.</li>
+              <li>Rectify inaccurate or incomplete information.</li>
+              <li>Erase your information ("right to be forgotten").</li>
+              <li>Restrict or object to processing, including direct marketing.</li>
+              <li>Data portability.</li>
+              <li>Withdraw consent at any time, without affecting prior processing.</li>
+              <li>Lodge a complaint with your local data protection supervisory authority.</li>
+            </ul>
+            <h3>California (CCPA / CPRA)</h3>
+            <ul>
+              <li>Know what personal information we collect, use, and disclose.</li>
+              <li>Access and obtain a copy of your personal information.</li>
+              <li>Correct inaccurate personal information.</li>
+              <li>Delete personal information, subject to legal exceptions.</li>
+              <li>Opt out of the sale or sharing of personal information &mdash; note that we do not sell or share personal information.</li>
+              <li>Limit the use of sensitive personal information &mdash; we do not use sensitive personal information for purposes that require this option.</li>
+              <li>Designate an authorized agent to make a request on your behalf.</li>
+            </ul>
+            <p>California residents may also request, once per year, information about disclosures to third parties for their direct marketing purposes under California&rsquo;s "Shine the Light" law. We do not share personal information for third-party direct marketing.</p>
+            <h3>Canada (PIPEDA)</h3>
+            <ul>
+              <li>Access the personal information we hold about you and request corrections.</li>
+              <li>Withdraw consent, subject to legal or contractual limits.</li>
+              <li>Challenge our compliance and complain to the Office of the Privacy Commissioner of Canada.</li>
+            </ul>
+            <h3>Australia (Privacy Act / APPs)</h3>
+            <ul>
+              <li>Access and seek correction of your personal information.</li>
+              <li>Ask how we handle your information and raise a concern.</li>
+              <li>Complain to the Office of the Australian Information Commissioner (OAIC) if you are not satisfied with our response.</li>
+            </ul>
+            <p>To exercise any of these rights, email us at <a href={`mailto:${email}`}>{email}</a>. We may need to verify your identity before acting on a request, and we will respond within the timeframe required by applicable law.</p>
+
+            <h2>Children&rsquo;s Privacy</h2>
+            <p>This website is intended for a general, university-aged audience and is not directed to children under 13. We do not knowingly collect personal information from children under 13. If you believe a child has provided us with personal information, please contact us so we can delete it.</p>
+
+            <h2>Third-Party Links</h2>
+            <p>Our site may link to external services such as Instagram, LinkedIn, YouTube, and partner websites. We are not responsible for the privacy practices of those services, and we encourage you to review their privacy policies.</p>
+
+            <h2>Changes to This Policy</h2>
+            <p>We may update this Policy from time to time. When we do, we will revise the &ldquo;Last updated&rdquo; date above, and for material changes we will provide a more prominent notice where appropriate. Your continued use of the website after an update means you accept the revised Policy.</p>
+
+            <h2>Contact Us</h2>
+            <p>If you have questions, concerns, or requests regarding this Policy or your personal information, contact LIFTS at <a href={`mailto:${email}`}>{email}</a>, University of Puerto Rico at Mayag&uuml;ez, Mayag&uuml;ez, Puerto Rico.</p>
           </div>
         </div>
       </section>
