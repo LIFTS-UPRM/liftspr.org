@@ -7,6 +7,13 @@ import './styles/react.css';
 
 const AdminApp = React.lazy(() => import('./admin/AdminApp.jsx'));
 
+// The admin-edited contact cards are the single source of truth for contact
+// emails. The footer and Privacy page show the first card (the primary
+// contact), so changing it in the dashboard updates every place it appears.
+function primaryContactEmail(contact) {
+  return contact?.cards?.[0]?.value || 'lifts@upr.edu';
+}
+
 const legacyRedirectParam = new URLSearchParams(window.location.search).get('p');
 if (legacyRedirectParam) {
   window.history.replaceState({}, '', decodeURIComponent(legacyRedirectParam));
@@ -320,7 +327,7 @@ function Footer() {
           <div className="footer-column">
             <h4>Contact</h4>
             <div className="footer-links">
-              <a href={`mailto:${siteData.contact.general_email}`} className="footer-link">{siteData.contact.general_email}</a>
+              <a href={`mailto:${primaryContactEmail(siteData.contact)}`} className="footer-link">{primaryContactEmail(siteData.contact)}</a>
               <Link to="/contributors" className="footer-link">Contributors</Link>
               <Link to="/privacy" className="footer-link">Privacy</Link>
             </div>
@@ -1011,7 +1018,7 @@ function ContributorsPage() {
 
 function PrivacyPage() {
   const siteData = useSiteData();
-  const email = siteData.contact.general_email;
+  const email = primaryContactEmail(siteData.contact);
   return (
     <>
       <PageHero

@@ -114,11 +114,8 @@ const SECTIONS = [
   },
   {
     key: 'contact', label: 'Contact', kind: 'object',
-    description: 'Public contact emails and contact cards.',
+    description: 'Contact cards shown on the Contact page. The first card is the primary contact and also appears in the site footer and Privacy page.',
     fields: [
-      { name: 'general_email', label: 'General Email' },
-      { name: 'media_email', label: 'Media Email' },
-      { name: 'info_email', label: 'Partnerships Email' },
       {
         name: 'cards', label: 'Contact Cards', type: 'list',
         fields: [
