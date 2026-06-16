@@ -1407,8 +1407,6 @@ function NotFoundPage() {
   return (
     <>
       <PageHero
-        label="404"
-        title="Page Not Found"
         label="Page Not Found"
         title="404"
         subtitle="The page you are looking for does not exist or may have moved."
