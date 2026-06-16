@@ -128,6 +128,11 @@ function normalizePath(path) {
   return path.length > 1 ? path.replace(/\/$/, '') : path;
 }
 
+function isAdminPath(path) {
+  const current = normalizePath(path);
+  return current === '/admin' || current.startsWith('/admin/');
+}
+
 function resolveRoute(pathname, siteData) {
   const current = normalizePath(pathname);
   const found = routes.find((route) => route.path === current || route.aliases.includes(current));
@@ -165,7 +170,7 @@ function App() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const route = useMemo(() => resolveRoute(pathname, siteData), [pathname, siteData]);
   const Page = route.component;
-  const isAdmin = normalizePath(pathname).startsWith('/admin');
+  const isAdmin = isAdminPath(pathname);
 
   useEffect(() => {
     const handleRoute = () => {
@@ -526,12 +531,9 @@ function Hero({ title, subtitle, image, actions, logo = false, mission = false }
   );
 }
 
-function PageHero({ label, title, subtitle, image = '/images/backgrounds/hero-space.svg' }) {
+function PageHero({ label, title, subtitle}) {
   return (
     <section className="page-hero">
-      <div className="page-hero-bg">
-        <img src={image} alt="" />
-      </div>
       <div className="page-hero-overlay"></div>
       <div className="page-hero-content">
         <span className="section-label">{label}</span>

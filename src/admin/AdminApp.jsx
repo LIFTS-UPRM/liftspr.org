@@ -201,6 +201,11 @@ export default function AdminApp() {
   const [session, setSession] = useState(null);
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+  // Track the profile fetch as a state machine so a failed/empty load surfaces an
+  // actionable screen instead of dead-ending on a permanent "Loading profile…".
+  const [profileStatus, setProfileStatus] = useState('loading'); // loading | ready | error
+  const [profileError, setProfileError] = useState(null);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -213,21 +218,89 @@ export default function AdminApp() {
     return () => sub.subscription.unsubscribe();
   }, []);
 
+  // Refetch only when the signed-in user changes (not on every token refresh /
+  // tab-focus auth event, which re-emit a new session object for the same user).
+  const userId = session?.user?.id ?? null;
+
   useEffect(() => {
-    if (!session) {
+    if (!userId) {
       setProfile(null);
+      setProfileError(null);
+      setProfileStatus('loading');
       return;
     }
-    supabase.from('profiles').select('*').eq('id', session.user.id).single()
-      .then(({ data }) => setProfile(data));
-  }, [session]);
+    let active = true;
+    setProfileStatus('loading');
+    setProfileError(null);
+    // maybeSingle(): a missing row returns data:null/error:null (handled as
+    // "profile not found") rather than throwing like single() does.
+    supabase.from('profiles').select('*').eq('id', userId).maybeSingle()
+      .then(({ data, error }) => {
+        if (!active) return;
+        if (error) {
+          setProfile(null);
+          setProfileError(error);
+          setProfileStatus('error');
+        } else {
+          setProfile(data);
+          setProfileStatus('ready');
+        }
+      })
+      .catch((error) => {
+        if (!active) return;
+        setProfile(null);
+        setProfileError(error);
+        setProfileStatus('error');
+      });
+    return () => { active = false; };
+  }, [userId, reloadKey]);
+
+  const retryProfile = () => setReloadKey((key) => key + 1);
 
   if (loading) return <div className="admin-shell"><p className="admin-muted">Loading…</p></div>;
   if (!session) return <AuthScreen />;
-  if (!profile) return <div className="admin-shell"><p className="admin-muted">Loading profile…</p></div>;
+  if (profileStatus === 'loading') return <div className="admin-shell"><p className="admin-muted">Loading profile…</p></div>;
+  if (profileStatus === 'error') {
+    return (
+      <ProfileGate title="Couldn’t load your profile" onRetry={retryProfile}>
+        <p className="admin-muted">
+          You’re signed in, but we couldn’t load your member profile. This is usually temporary —
+          try again in a moment. If it keeps happening, an admin may need to review the site’s database permissions.
+        </p>
+        {profileError?.message && <p className="admin-error" role="alert">{profileError.message}</p>}
+      </ProfileGate>
+    );
+  }
+  if (!profile) {
+    return (
+      <ProfileGate title="Profile not found" onRetry={retryProfile}>
+        <p className="admin-muted">
+          You’re signed in, but there’s no member profile for your account yet.
+          Ask a team admin to set up your access, then try again.
+        </p>
+      </ProfileGate>
+    );
+  }
   if (profile.role === 'pending') return <PendingScreen profile={profile} />;
 
   return <Panel profile={profile} />;
+}
+
+// Shared gate shown when the profile can't be loaded or doesn't exist. Always
+// offers a way out (retry / sign out) so the panel never gets stuck.
+function ProfileGate({ title, children, onRetry }) {
+  return (
+    <div className="admin-shell admin-center">
+      <div className="admin-card admin-auth">
+        <h1>{title}</h1>
+        {children}
+        <div className="admin-row-actions" style={{ marginTop: 8 }}>
+          <button className="admin-btn admin-btn-primary" onClick={onRetry}>Try again</button>
+          <button className="admin-btn" onClick={() => supabase.auth.signOut()}>Sign out</button>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 function AuthScreen() {
