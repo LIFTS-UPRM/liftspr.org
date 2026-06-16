@@ -6,6 +6,8 @@ import './styles/main.css';
 import './styles/react.css';
 
 const AdminApp = React.lazy(() => import('./admin/AdminApp.jsx'));
+const SITE_URL = 'https://liftspr.org';
+const DEFAULT_SOCIAL_IMAGE = `${SITE_URL}/images/logo/lifts-logo.svg`;
 
 // The admin-edited contact cards are the single source of truth for contact
 // emails. The footer and Privacy page show the first card (the primary
@@ -34,56 +36,58 @@ const routes = [
     path: '/',
     aliases: ['/index.html'],
     title: 'LIFTS | Near-Space Research & High-Altitude Balloon Missions',
-    description: 'LIFTS is a student-led near-space research program at UPRM conducting high-altitude balloon missions and CubeSat development.',
+    description: 'LIFTS is a student-led near-space research program at UPRM conducting high-altitude balloon missions, payload development, and CubeSat research from Puerto Rico.',
     component: HomePage,
   },
   {
     path: '/missions',
     aliases: ['/missions.html'],
-    title: 'Missions | LIFTS',
-    description: 'Explore LIFTS high-altitude balloon missions and CubeSat development work.',
+    title: 'High-Altitude Balloon & CubeSat Missions | LIFTS',
+    description: 'Explore LIFTS missions, including NEXO, ASCENT, and the UPRM CubeSat development program.',
     component: MissionsPage,
   },
   {
     path: '/launches',
     aliases: ['/launches.html'],
-    title: 'Launches | LIFTS',
-    description: 'Track upcoming and completed LIFTS launches.',
+    title: 'Launch Schedule | LIFTS',
+    description: 'Follow upcoming and completed LIFTS launches, flight milestones, and mission operations updates.',
     component: LaunchesPage,
   },
   {
     path: '/updates',
     aliases: ['/updates.html'],
-    title: 'Updates | LIFTS',
-    description: 'News and updates from the LIFTS mission team.',
+    title: 'Mission Updates | LIFTS',
+    description: 'Read LIFTS mission notes, program milestones, and development updates from the UPRM aerospace team.',
     component: UpdatesPage,
   },
   {
     path: '/careers',
     aliases: ['/careers.html'],
-    title: 'Careers | LIFTS',
-    description: 'Join LIFTS and help build near-space research missions at UPRM.',
+    title: 'Join the LIFTS Team | Student Aerospace Roles at UPRM',
+    description: 'Students can join LIFTS as payload engineers, flight software developers, operations coordinators, and outreach contributors.',
+    faq: true,
     component: CareersPage,
   },
   {
     path: '/about',
     aliases: ['/about.html'],
-    title: 'About | LIFTS',
-    description: 'Learn about LIFTS, a student aerospace research organization at UPRM.',
+    title: 'About LIFTS | Launch Initiatives for Technologies in Space',
+    description: 'Learn about LIFTS, a UPRM student aerospace research organization building near-space missions and CubeSat capability from Puerto Rico.',
     component: AboutPage,
   },
   {
     path: '/contact',
     aliases: ['/contact.html'],
-    title: 'Contact | LIFTS',
-    description: 'Contact LIFTS for student interest, media, partnerships, and mission support.',
+    title: 'Contact LIFTS | Partnerships, Media & Student Interest',
+    description: 'Contact LIFTS for student interest, mission support, media requests, sponsorships, and aerospace research collaboration.',
+    faq: true,
     component: ContactPage,
   },
   {
     path: '/contributors',
     aliases: ['/contributors.html'],
-    title: 'Contributors | LIFTS',
-    description: 'Meet the partners and contributors supporting LIFTS missions.',
+    title: 'Contributors & Supporters | LIFTS',
+    description: 'Meet the university, research, aerospace, and mission partners supporting LIFTS near-space work.',
     component: ContributorsPage,
   },
   {
@@ -96,22 +100,25 @@ const routes = [
   {
     path: '/nexo',
     aliases: ['/nexo.html'],
-    title: 'NEXO Mission | LIFTS',
-    description: 'NEXO was the first LIFTS high-altitude balloon mission.',
+    title: 'NEXO Mission | LIFTS High-Altitude Balloon Flight',
+    description: 'NEXO was the first LIFTS high-altitude balloon mission, launched during the 2024 total solar eclipse and recovered intact near Tyler, Texas.',
+    schemaType: 'Article',
     component: () => <MissionDetailPage missionId="nexo" />,
   },
   {
     path: '/ascent',
     aliases: ['/ascent.html'],
-    title: 'ASCENT Mission | LIFTS',
-    description: 'ASCENT is the next LIFTS high-altitude balloon mission.',
+    title: 'ASCENT Mission | LIFTS Puerto Rico High-Altitude Balloon',
+    description: 'ASCENT is a Puerto Rico-based LIFTS high-altitude balloon mission targeting a 100,000+ foot flight with multiple scientific payload modules.',
+    schemaType: 'Article',
     component: () => <MissionDetailPage missionId="ascent" />,
   },
   {
     path: '/cubesat',
     aliases: ['/cubesat.html'],
-    title: 'CubeSat Program | LIFTS',
-    description: 'The LIFTS CubeSat program is developing toward a student-led satellite mission.',
+    title: 'CubeSat Program | LIFTS UPRM Satellite Development',
+    description: 'The LIFTS CubeSat program is developing toward a student-led 1U satellite mission at UPRM.',
+    schemaType: 'Article',
     component: () => <MissionDetailPage missionId="cubesat" />,
   },
 ];
@@ -177,8 +184,11 @@ function App() {
     document.title = route.title;
     setMeta('description', route.description);
     setMeta('robots', route.notFound ? 'noindex' : 'index,follow');
-    setCanonical(`https://liftspr.org${route.path === '/' ? '/' : route.path}`);
-  }, [route, isAdmin]);
+    const canonical = `${SITE_URL}${route.path === '/' ? '/' : route.path}`;
+    setCanonical(canonical);
+    setSocialMeta(route, canonical);
+    setStructuredData(route, siteData, canonical);
+  }, [route, isAdmin, siteData]);
 
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? 'hidden' : '';
@@ -217,6 +227,20 @@ function setMeta(name, content) {
   tag.setAttribute('content', content);
 }
 
+function setMetaProperty(property, content) {
+  setMetaAttribute('property', property, content);
+}
+
+function setMetaAttribute(attribute, value, content) {
+  let tag = document.querySelector(`meta[${attribute}="${value}"]`);
+  if (!tag) {
+    tag = document.createElement('meta');
+    tag.setAttribute(attribute, value);
+    document.head.appendChild(tag);
+  }
+  tag.setAttribute('content', content);
+}
+
 function setCanonical(href) {
   let link = document.querySelector('link[rel="canonical"]');
   if (!link) {
@@ -225,6 +249,127 @@ function setCanonical(href) {
     document.head.appendChild(link);
   }
   link.setAttribute('href', href);
+}
+
+function setSocialMeta(route, canonical) {
+  const image = route.image || DEFAULT_SOCIAL_IMAGE;
+  setMetaProperty('og:type', 'website');
+  setMetaProperty('og:site_name', 'LIFTS');
+  setMetaProperty('og:title', route.title);
+  setMetaProperty('og:description', route.description);
+  setMetaProperty('og:url', canonical);
+  setMetaProperty('og:image', image);
+  setMeta('twitter:card', 'summary_large_image');
+  setMeta('twitter:title', route.title);
+  setMeta('twitter:description', route.description);
+  setMeta('twitter:image', image);
+}
+
+function setStructuredData(route, siteData, canonical) {
+  let script = document.getElementById('structured-data');
+  if (!script) {
+    script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.id = 'structured-data';
+    document.head.appendChild(script);
+  }
+  script.textContent = JSON.stringify(buildStructuredData(route, siteData, canonical));
+}
+
+function buildStructuredData(route, siteData, canonical) {
+  const organization = {
+    '@type': 'Organization',
+    name: siteData.organization.name,
+    legalName: siteData.organization.full_name,
+    description: siteData.organization.description,
+    url: `${SITE_URL}/`,
+    logo: DEFAULT_SOCIAL_IMAGE,
+    foundingDate: '2024-01',
+    email: siteData.organization.email,
+    parentOrganization: {
+      '@type': 'CollegeOrUniversity',
+      name: siteData.organization.institution,
+      url: 'https://www.uprm.edu/',
+    },
+    areaServed: {
+      '@type': 'Place',
+      name: 'Puerto Rico',
+    },
+    sameAs: [
+      siteData.social.instagram_url,
+      siteData.social.linkedin_url,
+      siteData.social.youtube_url,
+    ],
+    contactPoint: {
+      '@type': 'ContactPoint',
+      email: siteData.organization.email,
+      contactType: 'general inquiries',
+      areaServed: 'PR',
+      availableLanguage: ['English', 'Spanish'],
+    },
+  };
+
+  const graph = [
+    organization,
+    {
+      '@type': 'WebSite',
+      '@id': `${SITE_URL}/#website`,
+      url: `${SITE_URL}/`,
+      name: siteData.organization.name,
+      description: routes[0].description,
+      publisher: { '@type': 'Organization', name: siteData.organization.name },
+    },
+    {
+      '@type': 'WebPage',
+      '@id': `${canonical}#webpage`,
+      url: canonical,
+      name: route.title,
+      description: route.description,
+      isPartOf: { '@id': `${SITE_URL}/#website` },
+      about: { '@type': 'Organization', name: siteData.organization.name },
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE_URL}/` },
+        ...(route.path === '/' ? [] : [{ '@type': 'ListItem', position: 2, name: route.title.replace(' | LIFTS', ''), item: canonical }]),
+      ],
+    },
+  ];
+
+  if (route.faq) {
+    graph.push({
+      '@type': 'FAQPage',
+      mainEntity: siteData.faqs.map((faq) => ({
+        '@type': 'Question',
+        name: faq.question,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: faq.answer,
+        },
+      })),
+    });
+  }
+
+  if (route.schemaType === 'Article') {
+    graph.push({
+      '@type': 'Article',
+      headline: route.title,
+      description: route.description,
+      author: { '@type': 'Organization', name: siteData.organization.name },
+      publisher: {
+        '@type': 'Organization',
+        name: siteData.organization.name,
+        logo: { '@type': 'ImageObject', url: DEFAULT_SOCIAL_IMAGE },
+      },
+      mainEntityOfPage: canonical,
+    });
+  }
+
+  return {
+    '@context': 'https://schema.org',
+    '@graph': graph,
+  };
 }
 
 function Link({ to, className, children, ...props }) {
@@ -362,7 +507,10 @@ function Hero({ title, subtitle, image, actions, logo = false, mission = false }
       <div className="hero-overlay"></div>
       <div className="hero-content">
         {logo ? (
-          <img className="hero-title" src="/images/logo/lifts-logo-white.svg" alt="LIFTS Logo White Monochrome" />
+          <>
+            <h1 className="sr-only">{title}</h1>
+            <img className="hero-title" src="/images/logo/lifts-logo-white.svg" alt="LIFTS Logo White Monochrome" />
+          </>
         ) : (
           <h1 className="hero-title">{title}</h1>
         )}
@@ -485,6 +633,7 @@ function HomePage() {
   return (
     <>
       <Hero
+        title={siteData.organization.full_name}
         logo
         image="https://images.unsplash.com/photo-1661705969607-cde73828023d?q=80&w=2832&auto=format&fit=crop"
         subtitle={siteData.organization.tagline}
@@ -547,6 +696,7 @@ function HomePage() {
         </div>
       </section>
 
+      <AnswerSection />
       <ProgramsSection />
     </>
   );
@@ -873,6 +1023,44 @@ function ProgramsSection() {
               <div className="program-facts">
                 {program.facts.map((fact) => <span key={fact}>{fact}</span>)}
               </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function AnswerSection() {
+  const siteData = useSiteData();
+  const answers = [
+    {
+      question: 'What is LIFTS?',
+      answer: `${siteData.organization.full_name} is a student-led near-space research organization at UPRM. The team designs, builds, launches, tracks, and recovers high-altitude balloon payloads while developing the technical foundation for future CubeSat work from Puerto Rico.`,
+    },
+    {
+      question: 'What missions does LIFTS work on?',
+      answer: 'LIFTS works on high-altitude balloon missions, mission operations, payload development, and CubeSat research. Current programs include the completed NEXO eclipse balloon flight, the upcoming ASCENT Puerto Rico balloon mission, and a long-range 1U CubeSat development path.',
+    },
+    {
+      question: 'How can students, sponsors, or collaborators connect with LIFTS?',
+      answer: `Students and collaborators can contact LIFTS at ${siteData.organization.email}. The team welcomes interest in aerospace engineering, electronics, flight software, mission operations, outreach, sponsorship, media, and research collaboration.`,
+    },
+  ];
+
+  return (
+    <section className="section answer-section">
+      <div className="container">
+        <SectionHeader
+          label="Quick Answers"
+          title="Near-Space Research at UPRM"
+          subtitle="Concise answers for students, partners, search snippets, and AI-powered discovery."
+        />
+        <div className="grid grid-3">
+          {answers.map((item) => (
+            <article className="answer-card" key={item.question}>
+              <h3>{item.question}</h3>
+              <p>{item.answer}</p>
             </article>
           ))}
         </div>

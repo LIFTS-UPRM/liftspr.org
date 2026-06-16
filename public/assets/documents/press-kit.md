@@ -11,10 +11,11 @@
 | | |
 |---|---|
 | **Organization** | LIFTS - Launch Initiatives for Technologies in Space |
-| **Founded** | University of Puerto Rico at Mayagüez |
-| **Focus** | High-Altitude Balloons, Sounding Rockets, CubeSats |
-| **Team Size** | 17+ active members |
-| **Website** | [lifts.uprm.edu](https://lifts.uprm.edu) |
+| **Founded** | January 2024 |
+| **Institution** | University of Puerto Rico at Mayagüez |
+| **Focus** | High-Altitude Balloons, Payload Development, CubeSats |
+| **Team Size** | 18+ active members |
+| **Website** | [liftspr.org](https://liftspr.org) |
 
 ---
 
@@ -23,11 +24,11 @@
 ### NEXO - High-Altitude Balloon Program
 Near-space exploration missions reaching altitudes of 100,000+ feet. Payloads include atmospheric sensors, cameras, and experimental equipment.
 
-### ASCENT - Sounding Rocket Development
-Development of solid-fuel sounding rockets for suborbital research and technology demonstration.
+### ASCENT - Puerto Rico High-Altitude Balloon Mission
+Upcoming high-altitude balloon mission targeting a 100,000+ foot flight profile with five scientific payload modules in a 2.5 kg payload envelope.
 
 ### CubeSat Program
-Design and development of nanosatellites for orbital missions, participating in NASA and university launch programs.
+Design and development of student satellite subsystems toward a future 1U CubeSat mission.
 
 ---
 
@@ -49,11 +50,11 @@ Design and development of nanosatellites for orbital missions, participating in 
 ## Contact Information
 
 **Media Inquiries:**
-- Email: media@lifts.uprm.edu
+- Email: lifts@uprm.edu
 
 **General Contact:**
-- Email: info@lifts.uprm.edu
-- Website: lifts.uprm.edu/contact
+- Email: lifts@uprm.edu
+- Website: https://liftspr.org/contact
 
 **Location:**
 University of Puerto Rico at Mayagüez
