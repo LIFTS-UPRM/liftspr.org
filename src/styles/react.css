@@ -214,6 +214,19 @@
   opacity: 0.7;
 }
 
+.not-found-section {
+  padding-top: var(--spacing-3xl);
+}
+
+.not-found-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-lg);
+  text-align: center;
+}
+
 .date-month,
 .date-day,
 .date-year {

@@ -137,7 +137,13 @@ function resolveRoute(pathname, siteData) {
       component: () => <MissionDetailPage missionId={slug} />,
     };
   }
-  return routes[0];
+  return {
+    path: current,
+    title: 'Page Not Found | LIFTS',
+    description: 'The requested LIFTS page could not be found.',
+    notFound: true,
+    component: NotFoundPage,
+  };
 }
 
 function navigate(path) {
@@ -170,6 +176,7 @@ function App() {
     }
     document.title = route.title;
     setMeta('description', route.description);
+    setMeta('robots', route.notFound ? 'noindex' : 'index,follow');
     setCanonical(`https://liftspr.org${route.path === '/' ? '/' : route.path}`);
   }, [route, isAdmin]);
 
@@ -1205,6 +1212,27 @@ function NewsletterSection() {
         </form>
       </div>
     </section>
+  );
+}
+
+function NotFoundPage() {
+  return (
+    <>
+      <PageHero
+        label="404"
+        title="Page Not Found"
+        subtitle="The page you are looking for does not exist or may have moved."
+      />
+      <section className="section not-found-section">
+        <div className="container container-narrow">
+          <div className="not-found-actions">
+            <Link to="/" className="btn btn-primary">Return Home</Link>
+            <Link to="/missions" className="btn btn-secondary">Explore Missions</Link>
+            <Link to="/contact" className="btn btn-ghost">Contact LIFTS</Link>
+          </div>
+        </div>
+      </section>
+    </>
   );
 }
 
