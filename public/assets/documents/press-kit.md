@@ -35,10 +35,10 @@ Design and development of student satellite subsystems toward a future 1U CubeSa
 ## Media Assets
 
 ### Logo Files
-- lifts-logo.svg (primary)
-- lifts-logo-white.svg (for dark backgrounds)
-- lifts-logo-dark.svg (for light backgrounds)
-- lifts-icon.svg (favicon/app icon)
+- Logo.png (primary)
+- LIFTS-con-nombre-blanco.png (for dark backgrounds)
+- LIFTS-con-nombre-negro.png (for light backgrounds)
+- Logo-con-background.jpg (favicon/app icon)
 
 ### Image Guidelines
 - Always use official logos from this press kit

@@ -7,7 +7,7 @@
 The LIFTS logo is the primary visual identifier for our organization. Consistent usage strengthens brand recognition.
 
 #### Primary Logo
-- Use `lifts-logo.svg` for most applications
+- Use `Logo.png` for most applications
 - White version for dark backgrounds
 - Dark version for light backgrounds
 

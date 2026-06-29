@@ -356,14 +356,14 @@ function AuthScreen() {
     <div className="admin-shell admin-auth-split">
       <aside className="admin-auth-brand">
         <div className="admin-auth-brand-inner">
-          <img src="/images/logo/lifts-logo-white.svg" alt="LIFTS" className="admin-auth-brand-logo" />
+          <img src="/images/logo/LIFTS-con-nombre-blanco.png" alt="LIFTS" className="admin-auth-brand-logo" />
           <p className="admin-auth-tagline">Launching Ideas. Advancing Space</p>
           <p className="admin-auth-sub">Content control for near-space operations at UPRM.</p>
         </div>
       </aside>
       <div className="admin-auth-formwrap">
         <form className="admin-auth-form" onSubmit={handleSubmit}>
-          <img src="/images/logo/lifts-logo-white.svg" alt="LIFTS" className="admin-auth-form-logo" />
+          <img src="/images/logo/LIFTS-con-nombre-blanco.png" alt="LIFTS" className="admin-auth-form-logo" />
           <span className="admin-kicker">{mode === 'login' ? 'Member Access' : 'New Member'}</span>
           <h1>{mode === 'login' ? 'Member Login' : 'Request Access'}</h1>
           {mode === 'signup' && (
@@ -538,7 +538,7 @@ function Panel({ profile }) {
     <div className="admin-shell admin-layout">
       <aside className="admin-sidebar">
         <a href="/" className="admin-logo" title="View live site">
-          <img src="/images/logo/lifts-icon.svg" alt="LIFTS" />
+          <img src="/images/logo/Logo-con-background.jpg" alt="LIFTS" />
           <span>Content Panel</span>
         </a>
         <nav className="admin-nav">

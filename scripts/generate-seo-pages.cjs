@@ -3,7 +3,7 @@ const path = require('path');
 
 const distDir = path.resolve(__dirname, '..', 'dist');
 const baseUrl = 'https://liftspr.org';
-const defaultImage = `${baseUrl}/images/logo/lifts-logo.svg`;
+const defaultImage = `${baseUrl}/images/logo/Logo.png`;
 const today = new Date().toISOString().slice(0, 10);
 
 const routes = [

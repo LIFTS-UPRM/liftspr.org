@@ -7,7 +7,7 @@ import './styles/react.css';
 
 const AdminApp = React.lazy(() => import('./admin/AdminApp.jsx'));
 const SITE_URL = 'https://liftspr.org';
-const DEFAULT_SOCIAL_IMAGE = `${SITE_URL}/images/logo/lifts-logo.svg`;
+const DEFAULT_SOCIAL_IMAGE = `${SITE_URL}/images/logo/Logo.png`;
 
 // The admin-edited contact cards are the single source of truth for contact
 // emails. The footer and Privacy page show the first card (the primary
@@ -410,7 +410,7 @@ function Header({ activePath, mobileOpen, setMobileOpen }) {
     <header className={`header ${scrolled ? 'scrolled' : ''}`} id="header">
       <div className="header-inner">
         <Link to="/" className="logo">
-          <img src="/images/logo/lifts-logo.svg" alt="LIFTS Logo" />
+          <img src="/images/logo/Logo.png" alt="LIFTS Logo" />
         </Link>
 
         <nav className="nav-desktop">
@@ -462,7 +462,7 @@ function Footer() {
       <div className="container">
         <div className="footer-grid">
           <div className="footer-brand">
-            <img className="footer-logo" src="/images/logo/lifts-logo-white.svg" alt="LIFTS" />
+            <img className="footer-logo" src="/images/logo/LIFTS-con-nombre-blanco.png" alt="LIFTS" />
             <p className="footer-description">{siteData.organization.description}</p>
           </div>
           <div className="footer-column">
@@ -514,7 +514,7 @@ function Hero({ title, subtitle, image, actions, logo = false, mission = false }
         {logo ? (
           <>
             <h1 className="sr-only">{title}</h1>
-            <img className="hero-title" src="/images/logo/lifts-logo-white.svg" alt="LIFTS Logo White Monochrome" />
+            <img className="hero-title" src="/images/logo/LIFTS-con-nombre-blanco.png" alt="LIFTS Logo White Monochrome" />
           </>
         ) : (
           <h1 className="hero-title">{title}</h1>
