@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useMemo, useState } from 'react';
+import React, { Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { ContentProvider, useSiteData } from './lib/content.jsx';
 import { supabase } from './lib/supabaseClient.js';
@@ -606,8 +606,44 @@ function MissionCard({ mission }) {
   );
 }
 
+// Animates a numeric display value (e.g. "95K+", "100%", "18+") from 0 to its
+// target when `start` flips true. Non-numeric values render as-is.
+function CountUp({ value, start, duration = 2400 }) {
+  const match = String(value).match(/^(\D*)([\d.,]+)(.*)$/);
+  const numStr = match ? match[2] : '';
+  const target = match ? parseFloat(numStr.replace(/,/g, '')) : NaN;
+  const decimals = (numStr.split('.')[1] || '').length;
+  const [display, setDisplay] = useState(0);
+
+  useEffect(() => {
+    if (!start || Number.isNaN(target)) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      return setDisplay(target);
+    }
+    let raf, startTs;
+    const step = (now) => {
+      if (startTs == null) startTs = now;
+      const p = Math.min((now - startTs) / duration, 1);
+      const eased = 1 - Math.pow(1 - p, 3); // easeOutCubic
+      setDisplay(target * eased);
+      if (p < 1) raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(raf);
+  }, [start, target, duration]);
+
+  if (Number.isNaN(target)) return <>{value}</>;
+  const formatted = display.toLocaleString('en-US', {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  });
+  return <>{match[1]}{formatted}{match[3]}</>;
+}
+
 function StatsGrid() {
   const siteData = useSiteData();
+  const ref = useRef(null);
+  const [visible, setVisible] = useState(false);
   const stats = [
     ['Missions Completed', siteData.stats.missions_completed],
     ['Max Altitude', siteData.stats.max_altitude_display],
@@ -615,11 +651,23 @@ function StatsGrid() {
     ['Recovery Rate', siteData.stats.recovery_rate],
   ];
 
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (!('IntersectionObserver' in window)) return setVisible(true); // fallback
+    const obs = new IntersectionObserver(
+      ([entry]) => entry.isIntersecting && (setVisible(true), obs.disconnect()),
+      { threshold: 0.3 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
   return (
-    <div className="stats-grid" id="statsGrid">
-      {stats.map(([label, value]) => (
-        <div className="stat-item" key={label}>
-          <span className="stat-value">{value}</span>
+    <div className={`stats-grid${visible ? ' in-view' : ''}`} id="statsGrid" ref={ref}>
+      {stats.map(([label, value], i) => (
+        <div className="stat-item" key={label} style={{ '--i': i }}>
+          <span className="stat-value"><CountUp value={value} start={visible} /></span>
           <span className="stat-label">{label}</span>
         </div>
       ))}
@@ -698,9 +746,39 @@ function HomePage() {
         </div>
       </section>
 
+      <SponsorCarousel />
       <AnswerSection />
       <ProgramsSection />
     </>
+  );
+}
+
+// Continuously scrolling logo marquee. The list is rendered twice and the
+// track is translated -50%, so the loop is seamless; CSS pauses it on hover.
+function SponsorCarousel() {
+  const siteData = useSiteData();
+  const sponsors = siteData.contributors || [];
+  if (sponsors.length === 0) return null;
+  const loop = [...sponsors, ...sponsors];
+  return (
+    <section className="section" id="sponsors">
+      <div className="container">
+        <SectionHeader label="Our Supporters" title="Partners & Sponsors" />
+      </div>
+      <div className="marquee">
+        <div className="marquee-track">
+          {loop.map((sponsor, index) => (
+            <div
+              className="marquee-item"
+              key={`${sponsor.name}-${index}`}
+              aria-hidden={index >= sponsors.length ? 'true' : undefined}
+            >
+              <img src={sponsor.logo} alt={sponsor.name} loading="lazy" />
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }
 

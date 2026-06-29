@@ -193,6 +193,48 @@
   font-size: var(--text-lg);
 }
 
+.marquee {
+  overflow: hidden;
+  width: 100%;
+  margin-top: var(--spacing-2xl);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll 40s linear infinite;
+}
+
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+.marquee-item {
+  flex: 0 0 auto;
+  width: 150px; /* uniform slot → equal spacing regardless of logo width */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 120px;
+}
+
+.marquee-item img {
+  max-height: 72px;
+  max-width: 150px;
+  width: auto;
+  object-fit: contain;
+}
+
+@keyframes marquee-scroll {
+  to { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track { animation: none; }
+}
+
 .document-card {
   display: block;
 }

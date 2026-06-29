@@ -467,6 +467,13 @@ h6 { font-size: var(--text-base); }
     padding: 0 var(--spacing-xl);
 }
 
+/* Make header logo smaller when placed inside the hero */
+.hero .logo img {
+    height: 64px;
+    width: auto;
+    max-height: 64px;
+}
+
 .hero-title {
     font-size: var(--text-7xl);
     font-family: var(--font-bold);
@@ -474,6 +481,14 @@ h6 { font-size: var(--text-base); }
     letter-spacing: 0.05em;
     margin-bottom: calc(var(--spacing-lg) - 18%);
     animation: fadeInUp 1s ease forwards;
+}
+
+/* Logo variant of the hero title is a near-square image — cap its size */
+img.hero-title {
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+    margin: 0 auto var(--spacing-md);
 }
 
 .hero-subtitle {
@@ -770,9 +785,27 @@ h6 { font-size: var(--text-base); }
 
 .stat-item {
     text-align: center;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+/* Staggered entrance once the grid scrolls into view (see StatsGrid) */
+.stats-grid.in-view .stat-item {
+    animation: fadeInUp 0.6s ease forwards;
+    animation-delay: calc(var(--i) * 0.15s);
+}
+
+/* Reduced motion: skip the entrance, show final state (CountUp also skips) */
+@media (prefers-reduced-motion: reduce) {
+    .stat-item {
+        opacity: 1;
+        transform: none;
+        animation: none;
+    }
 }
 
 .stat-value {
+    display: block;
     font-family: var(--font-bold);
     font-size: var(--text-5xl);
     line-height: 1;
@@ -805,7 +838,7 @@ h6 { font-size: var(--text-base); }
 }
 
 .footer-logo {
-    height: 260px;
+    height: 200px;
     width: auto;
     margin-bottom: var(--spacing-lg);
 }
@@ -1252,6 +1285,13 @@ h6 { font-size: var(--text-base); }
         text-align: center;
         align-items: center;
     }
+
+    /* Smaller hero logo on tablet and below */
+    .hero .logo img {
+        height: 48px;
+        max-height: 48px;
+        width: auto;
+    }
 }
 
 @media (max-width: 480px) {
@@ -1280,6 +1320,13 @@ h6 { font-size: var(--text-base); }
     
     .countdown-value {
         font-size: var(--text-2xl);
+    }
+
+    /* Smaller hero logo on small phones */
+    .hero .logo img {
+        height: 40px;
+        max-height: 40px;
+        width: auto;
     }
 }
 
