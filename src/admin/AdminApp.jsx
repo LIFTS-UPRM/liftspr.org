@@ -357,7 +357,7 @@ function AuthScreen() {
       <aside className="admin-auth-brand">
         <div className="admin-auth-brand-inner">
           <img src="/images/logo/lifts-logo-white.svg" alt="LIFTS" className="admin-auth-brand-logo" />
-          <p className="admin-auth-tagline">Launches · Integration · Flight Test · Systems</p>
+          <p className="admin-auth-tagline">Launching Ideas. Advancing Space</p>
           <p className="admin-auth-sub">Content control for near-space operations at UPRM.</p>
         </div>
       </aside>
