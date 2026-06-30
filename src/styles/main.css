@@ -442,6 +442,8 @@ h6 { font-size: var(--text-base); }
     width: 100%;
     height: 100%;
     object-fit: cover;
+    /* Slow Ken Burns drift so the hero never sits dead still */
+    animation: kenburns 20s ease-out alternate infinite;
 }
 
 .hero-overlay {
@@ -528,7 +530,7 @@ img.hero-title {
     position: absolute;
     bottom: var(--spacing-2xl);
     left: 50%;
-    transform: translateX(-50%);
+    transform: translateX(0%);
     z-index: 2;
     animation: bounce 2s infinite;
 }
@@ -649,6 +651,20 @@ img.hero-title {
 .status-in-progress {
     background: var(--color-warning);
     color: var(--color-bg-primary);
+}
+
+/* Pulsing "live" dot on active missions (upcoming / in-progress) */
+.status-upcoming::before,
+.status-in-progress::before {
+    content: "";
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    margin-right: 6px;
+    vertical-align: middle;
+    border-radius: 50%;
+    background: currentColor;
+    animation: pulse 1.8s ease-in-out infinite;
 }
 
 /* ---------- Grid Layouts ---------- */
@@ -800,6 +816,13 @@ img.hero-title {
     .stat-item {
         opacity: 1;
         transform: none;
+        animation: none;
+    }
+    .hero-media img,
+    .hero-media video,
+    main,
+    .status-upcoming::before,
+    .status-in-progress::before {
         animation: none;
     }
 }
@@ -1179,6 +1202,41 @@ img.hero-title {
     }
     60% {
         transform: translateX(-50%) translateY(-5px);
+    }
+}
+
+@keyframes kenburns {
+    from { transform: scale(1); }
+    to { transform: scale(1.12) translateY(-2%); }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.35; }
+}
+
+/* Fade each route in on navigation (main is keyed by pathname in App) */
+main {
+    animation: fadeInUp 0.4s ease both;
+}
+
+/* Scroll-reveal: fade sections and cards in as they enter the viewport.
+   Native scroll-driven timeline — no JS. Degrades to static content on
+   browsers without support, and is disabled under reduced-motion. */
+@supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+        .section-header,
+        .card,
+        .news-card,
+        .job-card,
+        .answer-card,
+        .tech-card,
+        .logo-card,
+        .launch-item {
+            animation: fadeInUp 0.8s ease both;
+            animation-timeline: view();
+            animation-range: entry 0% cover 25%;
+        }
     }
 }
 

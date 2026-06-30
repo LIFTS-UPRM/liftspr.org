@@ -196,9 +196,10 @@
 .marquee {
   overflow: hidden;
   width: 100%;
-  margin-top: var(--spacing-2xl);
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
-  mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+  max-width: var(--max-width);
+  margin: var(--spacing-2xl) auto 0;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 16%, #000 84%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 16%, #000 84%, transparent);
 }
 
 .marquee-track {
@@ -228,7 +229,7 @@
 }
 
 @keyframes marquee-scroll {
-  to { transform: translateX(-50%); }
+  to { transform: translateX(calc(-100% / var(--marquee-copies, 4))); }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -214,7 +214,7 @@ function App() {
     <>
       <Header activePath={route.path} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
       <MobileNav activePath={route.path} mobileOpen={mobileOpen} />
-      <main>
+      <main key={pathname}>
         <Page />
       </main>
       <Footer />
@@ -753,20 +753,23 @@ function HomePage() {
   );
 }
 
-// Continuously scrolling logo marquee. The list is rendered twice and the
-// track is translated -50%, so the loop is seamless; CSS pauses it on hover.
+// Continuously scrolling logo marquee. The list is repeated COPIES times and the
+// track is translated by exactly one copy (-100%/COPIES) so the loop is seamless;
+// CSS pauses it on hover. The translate is tied to COPIES via a CSS var so the
+// render count and the keyframe can't drift apart (the cause of the old gap).
+const MARQUEE_COPIES = 4; // ponytail: enough to fill the 1400px band; bump if logos get sparse
 function SponsorCarousel() {
   const siteData = useSiteData();
   const sponsors = siteData.contributors || [];
   if (sponsors.length === 0) return null;
-  const loop = [...sponsors, ...sponsors];
+  const loop = Array.from({ length: MARQUEE_COPIES }, () => sponsors).flat();
   return (
     <section className="section" id="sponsors">
       <div className="container">
         <SectionHeader label="Our Supporters" title="Partners & Sponsors" />
       </div>
       <div className="marquee">
-        <div className="marquee-track">
+        <div className="marquee-track" style={{ '--marquee-copies': MARQUEE_COPIES }}>
           {loop.map((sponsor, index) => (
             <div
               className="marquee-item"
