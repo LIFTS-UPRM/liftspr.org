@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useId, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { supabase, uploadImage } from '../lib/supabaseClient';
 import '../styles/admin.css';
 
@@ -194,6 +194,17 @@ function formatAuthError(error, mode) {
   return { field: null, text: fallback };
 }
 
+// A signup/recovery email link lands at /admin/auth/confirm?token_hash=…&type=…
+// Supabase does not consume token_hash automatically — it needs an explicit
+// verifyOtp() call — so we detect that URL here and finish the exchange.
+function getConfirmParams() {
+  if (!window.location.pathname.replace(/\/$/, '').endsWith('/auth/confirm')) return null;
+  const params = new URLSearchParams(window.location.search);
+  const token_hash = params.get('token_hash');
+  const type = params.get('type');
+  return token_hash && type ? { token_hash, type } : null;
+}
+
 // ---------------------------------------------------------------------------
 // Root component
 // ---------------------------------------------------------------------------
@@ -206,6 +217,23 @@ export default function AdminApp() {
   const [profileStatus, setProfileStatus] = useState('loading'); // loading | ready | error
   const [profileError, setProfileError] = useState(null);
   const [reloadKey, setReloadKey] = useState(0);
+  const [confirming, setConfirming] = useState(() => getConfirmParams() !== null);
+  const [confirmError, setConfirmError] = useState(null);
+  const confirmStarted = useRef(false);
+
+  // Complete an email confirmation link: exchange token_hash for a session via
+  // verifyOtp, then strip the token from the URL so it can't be replayed from
+  // browser history. verifyOtp signs the user in, so onAuthStateChange takes over.
+  useEffect(() => {
+    const confirm = getConfirmParams();
+    if (!confirm || confirmStarted.current) return;
+    confirmStarted.current = true;
+    supabase.auth.verifyOtp({ type: confirm.type, token_hash: confirm.token_hash }).then(({ error }) => {
+      window.history.replaceState({}, '', '/admin');
+      if (error) setConfirmError(error.message || 'This confirmation link is invalid or has expired.');
+      setConfirming(false);
+    });
+  }, []);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -256,6 +284,20 @@ export default function AdminApp() {
   }, [userId, reloadKey]);
 
   const retryProfile = () => setReloadKey((key) => key + 1);
+
+  if (confirming) return <div className="admin-shell"><p className="admin-muted">Confirming your email…</p></div>;
+  if (confirmError && !session) {
+    return (
+      <div className="admin-shell admin-center">
+        <div className="admin-card admin-auth">
+          <h1>Confirmation failed</h1>
+          <p className="admin-muted">{confirmError}</p>
+          <p className="admin-muted">The link may have expired or already been used. Sign in below, or request access again to get a new link.</p>
+          <button className="admin-btn admin-btn-primary" onClick={() => setConfirmError(null)}>Go to login</button>
+        </div>
+      </div>
+    );
+  }
 
   if (loading) return <div className="admin-shell"><p className="admin-muted">Loading…</p></div>;
   if (!session) return <AuthScreen />;
