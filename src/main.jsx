@@ -9,6 +9,19 @@ const AdminApp = React.lazy(() => import('./admin/AdminApp.jsx'));
 const SITE_URL = 'https://liftspr.org';
 const DEFAULT_SOCIAL_IMAGE = `${SITE_URL}/images/logo/Logo.png`;
 
+function preventFramedRender() {
+  if (window.self === window.top) return;
+  document.documentElement.style.display = 'none';
+  try {
+    window.top.location = window.location.href;
+  } catch {
+    // ponytail: GitHub Pages cannot set frame headers; blank the frame if top navigation is blocked.
+  }
+  throw new Error('Framed rendering is blocked.');
+}
+
+preventFramedRender();
+
 // The admin-edited contact cards are the single source of truth for contact
 // emails. The footer and Privacy page show the first card (the primary
 // contact), so changing it in the dashboard updates every place it appears.
@@ -495,6 +508,7 @@ function Footer() {
           <div className="footer-legal">
             <Link to="/privacy">Privacy</Link>
             <Link to="/contact">Contact</Link>
+            <a href="https://fonts.google.com/specimen/Roboto" target="_blank" rel="noopener noreferrer">Font: Roboto</a>
             <a href="/admin">Member Login</a>
           </div>
         </div>
@@ -503,7 +517,7 @@ function Footer() {
   );
 }
 
-function Hero({ title, subtitle, image, actions, logo = false, mission = false }) {
+function Hero({ title, subtitle, image, imageCredit, actions, logo = false, mission = false }) {
   return (
     <section className={`hero ${mission ? 'hero-mission' : ''}`}>
       <div className="hero-media">
@@ -522,6 +536,11 @@ function Hero({ title, subtitle, image, actions, logo = false, mission = false }
         <p className="hero-subtitle">{subtitle}</p>
         {actions ? <div className="hero-actions">{actions}</div> : null}
       </div>
+      {imageCredit ? (
+        <a className="hero-credit" href={imageCredit.href} target="_blank" rel="noopener noreferrer">
+          {imageCredit.label}
+        </a>
+      ) : null}
       <div className="hero-scroll" aria-hidden="true">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M12 5v14M5 12l7 7 7-7" />
@@ -686,6 +705,10 @@ function HomePage() {
         title={siteData.organization.full_name}
         logo
         image="https://images.unsplash.com/photo-1661705969607-cde73828023d?q=80&w=2832&auto=format&fit=crop"
+        imageCredit={{
+          label: 'Photo: Vimal S / Unsplash',
+          href: 'https://unsplash.com/photos/GBg3jyGS-Ug',
+        }}
         subtitle={siteData.organization.tagline}
         actions={
           <>

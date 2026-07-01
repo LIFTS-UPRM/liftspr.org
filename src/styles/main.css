@@ -526,6 +526,22 @@ img.hero-title {
     opacity: 0;
 }
 
+.hero-credit {
+    position: absolute;
+    right: var(--spacing-md);
+    bottom: var(--spacing-md);
+    z-index: 2;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background: rgba(0, 0, 0, 0.55);
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+    transition: color var(--transition-fast);
+}
+
+.hero-credit:hover {
+    color: var(--color-text-primary);
+}
+
 .hero-scroll {
     position: absolute;
     bottom: var(--spacing-2xl);

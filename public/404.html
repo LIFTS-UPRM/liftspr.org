@@ -5,6 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>LIFTS</title>
     <script>
+      function preventFramedRender() {
+        if (window.self === window.top) return false;
+        document.documentElement.style.display = 'none';
+        try {
+          window.top.location = window.location.href;
+        } catch (error) {
+          // ponytail: GitHub Pages cannot set frame headers; blank the frame if top navigation is blocked.
+        }
+        return true;
+      }
+
+      if (preventFramedRender()) {
+        throw new Error('Framed rendering is blocked.');
+      }
+
       var target = window.location.pathname + window.location.search + window.location.hash;
       window.location.replace('/?p=' + encodeURIComponent(target));
     </script>
