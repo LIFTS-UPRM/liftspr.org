@@ -28,6 +28,11 @@ confirm-signup email template when configuring the auth emails for this website.
 New members sign up themselves at `/admin`, then an admin grants them a role
 from the **Members** tab.
 
+Supabase Auth also runs `public.hook_restrict_account_creation` before creating
+users. The hook rejects signups unless the email ends in `upr.edu` and the
+request IP is inside a CIDR listed in `public.signup_allowed_networks`. Populate
+that table with approved Puerto Rico network ranges before enabling open signup.
+
 ## What's editable
 
 - **Posts** — news/updates shown on the Updates page (title, category, date, summary, body, image)

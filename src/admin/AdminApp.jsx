@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { supabase, uploadImage } from '../lib/supabaseClient';
+import { requestPuertoRicoLocation, signupEmailError } from './authGuards';
 import '../styles/admin.css';
 
 const STATUS_DISPLAY = {
@@ -366,6 +367,12 @@ function AuthScreen() {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
       } else {
+        const emailErrorText = signupEmailError(email);
+        if (emailErrorText) {
+          setMessage({ ok: false, field: 'email', text: emailErrorText });
+          return;
+        }
+
         if (password.length < 8) {
           setMessage({
             ok: false,
@@ -374,6 +381,16 @@ function AuthScreen() {
           });
           return;
         }
+
+        if (!(await requestPuertoRicoLocation())) {
+          setMessage({
+            ok: false,
+            field: null,
+            text: 'Not able to create account. Account creation is only available from Puerto Rico.',
+          });
+          return;
+        }
+
         const { error } = await supabase.auth.signUp({
           email,
           password,
@@ -438,7 +455,7 @@ function AuthScreen() {
             />
             {mode === 'signup' && (
               <small id={passwordHelpId} className="admin-field-help">
-                Use at least 8 characters. Access still needs admin approval after signup.
+                Use at least 8 characters. Signup requires a UPR email and a Puerto Rico location check.
               </small>
             )}
           </label>
