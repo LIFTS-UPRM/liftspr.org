@@ -1160,7 +1160,7 @@
     word-break: break-word;
 }
 
-/* status pill for reviewed decisions / broadcast states */
+/* status pill for reviewed decisions */
 .admin-status {
     display: inline-flex;
     align-items: center;
@@ -1176,8 +1176,7 @@
     color: var(--color-text-muted);
 }
 
-.admin-status-approved,
-.admin-status-sent {
+.admin-status-approved {
     color: var(--color-success);
     background: var(--color-success-bg);
 }
@@ -1187,9 +1186,7 @@
     background: var(--color-danger-bg);
 }
 
-.admin-status-pending,
-.admin-status-queued,
-.admin-status-draft {
+.admin-status-pending {
     color: var(--color-warning);
     background: var(--color-warning-bg);
 }

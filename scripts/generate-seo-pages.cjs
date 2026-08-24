@@ -114,9 +114,9 @@ const routes = [
   {
     path: '/privacy',
     title: 'Privacy Policy | LIFTS',
-    description: 'Privacy information for the LIFTS website, contact forms, newsletter, and member accounts.',
+    description: 'Privacy information for the LIFTS website, contact forms, and member accounts.',
     heading: 'Privacy Policy',
-    summary: 'The LIFTS privacy policy explains how the organization handles contact messages, newsletter subscriptions, member accounts, service providers, and data rights.',
+    summary: 'The LIFTS privacy policy explains how the organization handles contact messages, member accounts, service providers, and data rights.',
     priority: '0.3',
     changefreq: 'yearly',
   },

@@ -11,6 +11,63 @@
     "tagline": "Advancing near-space research and inspiring the next generation of aerospace engineers from Puerto Rico.",
     "description": "LIFTS is a student-led near-space research program at UPRM conducting high-altitude balloon missions, payload development, and CubeSat research."
   },
+  "home_intro": {
+    "title": "What is LIFTS?",
+    "description": "LIFTS is a student-led near-space research organization at UPRM. The team designs, builds, launches, tracks, and recovers high-altitude balloon payloads while developing the technical foundation for future CubeSat work from Puerto Rico."
+  },
+  "homepage": {
+    "hero_image": "https://images.unsplash.com/photo-1661705969607-cde73828023d?q=80&w=2832&auto=format&fit=crop",
+    "hero_credit_label": "Photo: Vimal S / Unsplash",
+    "hero_credit_url": "https://unsplash.com/photos/GBg3jyGS-Ug",
+    "primary_cta": "Explore Missions",
+    "secondary_cta": "Learn More About LIFTS",
+    "about_label": "About LIFTS",
+    "about_cta": "Learn More About LIFTS",
+    "mission_label": "Our Work",
+    "mission_title": "Mission Highlights",
+    "mission_subtitle": "Explore completed, upcoming, and in-progress missions pushing the boundaries of student-led near-space research.",
+    "mission_cta": "View All Missions",
+    "supporters_label": "Our Supporters",
+    "supporters_title": "Partners & Sponsors",
+    "supporters_subtitle": "Thank you to our sponsors and partners for supporting LIFTS and helping make student-led aerospace research possible.",
+    "answers_label": "Quick Answers",
+    "answers_title": "Near-Space Research at UPRM",
+    "answers_subtitle": "Concise answers for students, partners, search snippets, and AI-powered discovery.",
+    "answers": [
+      {
+        "question": "What is LIFTS?",
+        "answer": "LIFTS is a student-led near-space research organization at UPRM. The team designs, builds, launches, tracks, and recovers high-altitude balloon payloads while developing the technical foundation for future CubeSat work from Puerto Rico."
+      },
+      {
+        "question": "What missions does LIFTS work on?",
+        "answer": "LIFTS works on high-altitude balloon missions, mission operations, payload development, and CubeSat research. Current programs include the completed NEXO eclipse balloon flight, the upcoming ASCENT Puerto Rico balloon mission, and a long-range 1U CubeSat development path."
+      },
+      {
+        "question": "How can students, sponsors, or collaborators connect with LIFTS?",
+        "answer": "Students and collaborators can contact LIFTS at lifts@uprm.edu. The team welcomes interest in aerospace engineering, electronics, flight software, mission operations, outreach, sponsorship, media, and research collaboration."
+      }
+    ],
+    "programs_label": "Programs",
+    "programs_title": "A Practical Aerospace Pipeline",
+    "programs_subtitle": "Each program builds technical depth while supporting the next mission."
+  },
+  "home_gallery": [
+    {
+      "title": "NEXO Mission",
+      "caption": "High-altitude balloon research during the 2024 total solar eclipse.",
+      "image_url": "https://images.unsplash.com/photo-1454789548928-9efd52dc4031?w=1200&q=80"
+    },
+    {
+      "title": "ASCENT Mission",
+      "caption": "Preparing the next generation of Puerto Rico-led near-space missions.",
+      "image_url": "https://images.unsplash.com/photo-1614728263952-84ea256f9679?w=1200&q=80"
+    },
+    {
+      "title": "CubeSat Program",
+      "caption": "Building the technical foundation for future student-led satellite missions.",
+      "image_url": "https://images.unsplash.com/photo-1446776877081-d282a0f896e2?w=1200&q=80"
+    }
+  ],
   "team": {
     "member_count": 18,
     "member_count_display": "18+"

@@ -53,6 +53,7 @@ export function ContentProvider({ children }) {
 
         if (!gallery.error && gallery.data?.length) {
           merged.gallery = gallery.data;
+          merged.home_gallery = gallery.data;
         }
 
         setContent(merged);

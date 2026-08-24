@@ -573,41 +573,6 @@ function SectionHeader({ label, title, subtitle }) {
   );
 }
 
-function Countdown({ targetDate }) {
-  const [remaining, setRemaining] = useState(() => getRemaining(targetDate));
-
-  useEffect(() => {
-    const timer = window.setInterval(() => setRemaining(getRemaining(targetDate)), 1000);
-    return () => window.clearInterval(timer);
-  }, [targetDate]);
-
-  return (
-    <div className="countdown" id="countdown" aria-label="Countdown to next mission">
-      {[
-        ['Days', remaining.days],
-        ['Hours', remaining.hours],
-        ['Minutes', remaining.minutes],
-        ['Seconds', remaining.seconds],
-      ].map(([label, value]) => (
-        <div className="countdown-item" key={label}>
-          <span className="countdown-value">{String(Math.max(value, 0)).padStart(2, '0')}</span>
-          <span className="countdown-label">{label}</span>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-function getRemaining(targetDate) {
-  const total = Math.max(new Date(targetDate).getTime() - Date.now(), 0);
-  return {
-    days: Math.floor(total / (1000 * 60 * 60 * 24)),
-    hours: Math.floor((total / (1000 * 60 * 60)) % 24),
-    minutes: Math.floor((total / 1000 / 60) % 60),
-    seconds: Math.floor((total / 1000) % 60),
-  };
-}
-
 function MissionCard({ mission }) {
   return (
     <article className="card">
@@ -697,58 +662,35 @@ function StatsGrid() {
 function HomePage() {
   const siteData = useSiteData();
   const missions = Object.values(siteData.missions);
-  const featured = missions.find((mission) => mission.status === 'upcoming');
+  const homepage = siteData.homepage || {};
 
   return (
     <>
       <Hero
         title={siteData.organization.full_name}
         logo
-        image="https://images.unsplash.com/photo-1661705969607-cde73828023d?q=80&w=2832&auto=format&fit=crop"
-        imageCredit={{
-          label: 'Photo: Vimal S / Unsplash',
-          href: 'https://unsplash.com/photos/GBg3jyGS-Ug',
-        }}
+        image={homepage.hero_image || 'https://images.unsplash.com/photo-1661705969607-cde73828023d?q=80&w=2832&auto=format&fit=crop'}
+        imageCredit={homepage.hero_credit_url ? {
+          label: homepage.hero_credit_label,
+          href: homepage.hero_credit_url,
+        } : null}
         subtitle={siteData.organization.tagline}
         actions={
           <>
-            <Link to="/missions" className="btn btn-primary btn-lg">Explore Missions</Link>
-            <Link to="/about" className="btn btn-secondary btn-lg">Learn More About LIFTS</Link>
+            <Link to="/missions" className="btn btn-primary btn-lg">{homepage.primary_cta || 'Explore Missions'}</Link>
+            <Link to="/about" className="btn btn-secondary btn-lg">{homepage.secondary_cta || 'Learn More About LIFTS'}</Link>
           </>
         }
       />
 
-      {featured ? (
-        <section className="featured-event" id="nextMission">
-          <div className="container">
-            <div className="featured-event-content">
-              <div className="featured-event-info">
-                <span className="featured-event-label">Next Mission</span>
-                <h2 className="featured-event-title">{featured.name} Mission</h2>
-                <Countdown targetDate={featured.date_iso || featured.date} />
-                <div className="featured-event-meta">
-                  <Meta label="Date" value={featured.date_display} />
-                  <Meta label="Location" value={featured.location} />
-                  {featured.target_altitude_display ? (
-                    <Meta label="Target Altitude" value={featured.target_altitude_display} />
-                  ) : null}
-                </div>
-                <Link to={`/${featured.slug}`} className="btn btn-primary">View Mission Details</Link>
-              </div>
-              <div className="featured-event-image">
-                <img src={featured.image} alt={`${featured.name} mission preparation`} />
-              </div>
-            </div>
-          </div>
-        </section>
-      ) : null}
+      <WhatIsLiftsSection />
 
       <section className="section" id="missionHighlights">
         <div className="container">
           <SectionHeader
-            label="Our Work"
-            title="Mission Highlights"
-            subtitle="Explore completed, upcoming, and in-progress missions pushing the boundaries of student-led near-space research."
+            label={homepage.mission_label || 'Our Work'}
+            title={homepage.mission_title || 'Mission Highlights'}
+            subtitle={homepage.mission_subtitle || 'Explore completed, upcoming, and in-progress missions pushing the boundaries of student-led near-space research.'}
           />
           <div className="scroll-container">
             {missions.map((mission) => (
@@ -758,7 +700,7 @@ function HomePage() {
             ))}
           </div>
           <div className="text-center section-action">
-            <Link to="/missions" className="btn btn-secondary">View All Missions</Link>
+            <Link to="/missions" className="btn btn-secondary">{homepage.mission_cta || 'View All Missions'}</Link>
           </div>
         </div>
       </section>
@@ -784,12 +726,17 @@ const MARQUEE_COPIES = 4; // ponytail: enough to fill the 1400px band; bump if l
 function SponsorCarousel() {
   const siteData = useSiteData();
   const sponsors = siteData.contributors || [];
+  const homepage = siteData.homepage || {};
   if (sponsors.length === 0) return null;
   const loop = Array.from({ length: MARQUEE_COPIES }, () => sponsors).flat();
   return (
     <section className="section" id="sponsors">
       <div className="container">
-        <SectionHeader label="Our Supporters" title="Partners & Sponsors" />
+        <SectionHeader
+          label={homepage.supporters_label || 'Our Supporters'}
+          title={homepage.supporters_title || 'Partners & Sponsors'}
+          subtitle={homepage.supporters_subtitle || 'Thank you to our sponsors and partners for supporting LIFTS and helping make student-led aerospace research possible.'}
+        />
       </div>
       <div className="marquee">
         <div className="marquee-track" style={{ '--marquee-copies': MARQUEE_COPIES }}>
@@ -808,11 +755,95 @@ function SponsorCarousel() {
   );
 }
 
-function Meta({ label, value }) {
+function WhatIsLiftsSection() {
+  const siteData = useSiteData();
+  const intro = siteData.home_intro || {};
+  const homepage = siteData.homepage || {};
+  const photos = siteData.home_gallery || siteData.gallery || [];
+
   return (
-    <div className="featured-event-meta-item">
-      <span className="featured-event-meta-label">{label}</span>
-      <span className="featured-event-meta-value">{value}</span>
+    <section className="featured-event" id="whatIsLifts">
+      <div className="container">
+        <div className="featured-event-content">
+          <div className="featured-event-info">
+            <span className="featured-event-label">{homepage.about_label || 'About LIFTS'}</span>
+            <h2 className="featured-event-title">{intro.title || 'What is LIFTS?'}</h2>
+            <p className="featured-event-description">{intro.description || siteData.organization.description}</p>
+            <Link to="/about" className="btn btn-primary">{homepage.about_cta || 'Learn More About LIFTS'}</Link>
+          </div>
+          <PhotoCarousel photos={photos} />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function PhotoCarousel({ photos }) {
+  const slides = photos.filter((photo) => photo?.image_url);
+  const [active, setActive] = useState(0);
+  const [paused, setPaused] = useState(false);
+
+  useEffect(() => {
+    setActive(0);
+  }, [slides.length]);
+
+  useEffect(() => {
+    if (slides.length < 2 || paused || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined;
+    const timer = window.setInterval(() => setActive((index) => (index + 1) % slides.length), 5000);
+    return () => window.clearInterval(timer);
+  }, [paused, slides.length]);
+
+  if (!slides.length) {
+    return <div className="featured-event-image photo-carousel"><p>No photos available yet.</p></div>;
+  }
+
+  const slide = slides[active % slides.length];
+  const showControls = slides.length > 1;
+
+  return (
+    <div
+      className="featured-event-image photo-carousel"
+      role="region"
+      aria-roledescription="carousel"
+      aria-label="LIFTS photos"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
+      <img src={slide.image_url} alt={slide.title || 'LIFTS mission photo'} />
+      {slide.caption ? <p className="photo-carousel-caption">{slide.caption}</p> : null}
+      {showControls ? (
+        <>
+          <button
+            className="photo-carousel-control photo-carousel-control-prev"
+            type="button"
+            aria-label="Previous photo"
+            onClick={() => setActive((index) => (index - 1 + slides.length) % slides.length)}
+          >
+            ‹
+          </button>
+          <button
+            className="photo-carousel-control photo-carousel-control-next"
+            type="button"
+            aria-label="Next photo"
+            onClick={() => setActive((index) => (index + 1) % slides.length)}
+          >
+            ›
+          </button>
+          <div className="photo-carousel-dots" role="tablist" aria-label="Choose a photo">
+            {slides.map((photo, index) => (
+              <button
+                className={`photo-carousel-dot${index === active ? ' active' : ''}`}
+                type="button"
+                role="tab"
+                aria-label={`Show photo ${index + 1}`}
+                aria-selected={index === active}
+                key={`${photo.image_url}-${index}`}
+                onClick={() => setActive(index)}
+              />
+            ))}
+          </div>
+        </>
+      ) : null}
     </div>
   );
 }
@@ -1049,7 +1080,6 @@ function UpdatesPage() {
           </div>
         </section>
       ) : null}
-      <NewsletterSection />
     </>
   );
 }
@@ -1117,10 +1147,15 @@ function AboutPage() {
 
 function ProgramsSection() {
   const siteData = useSiteData();
+  const homepage = siteData.homepage || {};
   return (
     <section className="section">
       <div className="container">
-        <SectionHeader label="Programs" title="A Practical Aerospace Pipeline" subtitle="Each program builds technical depth while supporting the next mission." />
+        <SectionHeader
+          label={homepage.programs_label || 'Programs'}
+          title={homepage.programs_title || 'A Practical Aerospace Pipeline'}
+          subtitle={homepage.programs_subtitle || 'Each program builds technical depth while supporting the next mission.'}
+        />
         <div className="grid grid-3">
           {siteData.programs.map((program) => (
             <article className="tech-card" key={program.name}>
@@ -1139,7 +1174,7 @@ function ProgramsSection() {
 
 function AnswerSection() {
   const siteData = useSiteData();
-  const answers = [
+  const fallbackAnswers = [
     {
       question: 'What is LIFTS?',
       answer: `${siteData.organization.full_name} is a student-led near-space research organization at UPRM. The team designs, builds, launches, tracks, and recovers high-altitude balloon payloads while developing the technical foundation for future CubeSat work from Puerto Rico.`,
@@ -1153,14 +1188,16 @@ function AnswerSection() {
       answer: `Students and collaborators can contact LIFTS at ${siteData.organization.email}. The team welcomes interest in aerospace engineering, electronics, flight software, mission operations, outreach, sponsorship, media, and research collaboration.`,
     },
   ];
+  const homepage = siteData.homepage || {};
+  const answers = homepage.answers?.length ? homepage.answers : fallbackAnswers;
 
   return (
     <section className="section answer-section">
       <div className="container">
         <SectionHeader
-          label="Quick Answers"
-          title="Near-Space Research at UPRM"
-          subtitle="Concise answers for students, partners, search snippets, and AI-powered discovery."
+          label={homepage.answers_label || 'Quick Answers'}
+          title={homepage.answers_title || 'Near-Space Research at UPRM'}
+          subtitle={homepage.answers_subtitle || 'Concise answers for students, partners, search snippets, and AI-powered discovery.'}
         />
         <div className="grid grid-3">
           {answers.map((item) => (
@@ -1333,7 +1370,7 @@ function PrivacyPage() {
             <p className="legal-meta">Last updated: June 14, 2026</p>
 
             <h2>Introduction</h2>
-            <p>This Privacy Policy explains how LIFTS ("LIFTS," "we," "us," or "our"), a student organization based at the University of Puerto Rico at Mayag&uuml;ez (UPRM), collects, uses, discloses, and safeguards personal information when you visit this website, contact us, subscribe to our newsletter, or hold a member account. It also describes the choices and rights available to you.</p>
+            <p>This Privacy Policy explains how LIFTS ("LIFTS," "we," "us," or "our"), a student organization based at the University of Puerto Rico at Mayag&uuml;ez (UPRM), collects, uses, discloses, and safeguards personal information when you visit this website, contact us, or hold a member account. It also describes the choices and rights available to you.</p>
             <p>We are committed to handling personal information responsibly and in line with applicable data protection laws, including the EU and UK General Data Protection Regulation (GDPR), the California Consumer Privacy Act as amended by the California Privacy Rights Act (CCPA/CPRA), the California Online Privacy Protection Act (CalOPPA), Canada&rsquo;s Personal Information Protection and Electronic Documents Act (PIPEDA), and Australia&rsquo;s Privacy Act 1988 and the Australian Privacy Principles (APPs).</p>
             <p>If you do not agree with this Policy, please do not use the website or submit personal information to us.</p>
 
@@ -1344,7 +1381,6 @@ function PrivacyPage() {
             <h3>Information you provide to us</h3>
             <ul>
               <li><strong>Contact details and messages.</strong> When you email us or use the contact form, we receive the information you choose to share, such as your name, email address, the topic you select, and the contents of your message.</li>
-              <li><strong>Newsletter subscriptions.</strong> If you subscribe to our newsletter, we collect your email address in order to send you updates.</li>
               <li><strong>Member accounts.</strong> If you are a LIFTS member with access to the member area, we process account information such as your name, email address, role, and related membership details.</li>
             </ul>
             <h3>Information collected automatically</h3>
@@ -1357,7 +1393,6 @@ function PrivacyPage() {
             <h2>How We Use Your Information</h2>
             <ul>
               <li>To respond to your inquiries and communicate with you.</li>
-              <li>To send the newsletter and other updates you have requested.</li>
               <li>To create and administer member accounts and coordinate team activity.</li>
               <li>To operate, maintain, secure, and improve the website.</li>
               <li>To comply with legal obligations and protect our rights and the rights of others.</li>
@@ -1367,7 +1402,6 @@ function PrivacyPage() {
             <h2>Legal Bases for Processing (GDPR / UK GDPR)</h2>
             <p>If you are in the European Economic Area, the United Kingdom, or another region with similar laws, we rely on the following legal bases:</p>
             <ul>
-              <li><strong>Consent</strong> &mdash; for example, when you subscribe to our newsletter. You may withdraw consent at any time.</li>
               <li><strong>Performance of, or steps toward, a relationship</strong> &mdash; for example, administering your member account.</li>
               <li><strong>Legitimate interests</strong> &mdash; such as responding to your messages, keeping the site secure, and operating our organization, where those interests are not overridden by your rights.</li>
               <li><strong>Legal obligation</strong> &mdash; where we must process information to comply with the law.</li>
@@ -1376,7 +1410,7 @@ function PrivacyPage() {
             <h2>How We Share Information</h2>
             <p>We do not sell your personal information, and we do not share it for cross-context behavioral advertising or targeted advertising. We disclose personal information only in these limited circumstances:</p>
             <ul>
-              <li><strong>Service providers.</strong> We use trusted vendors that process information on our behalf, including Supabase (database, authentication, and serverless functions), Resend (newsletter delivery and list management), and GitHub Pages (website hosting). These providers are bound by contract to use the information only to provide services to us.</li>
+              <li><strong>Service providers.</strong> We use trusted vendors that process information on our behalf, including Supabase (database, authentication, and serverless functions) and GitHub Pages (website hosting). These providers are bound by contract to use the information only to provide services to us.</li>
               <li><strong>Legal and safety reasons.</strong> We may disclose information if required by law or to protect the rights, safety, or property of LIFTS, our members, or others.</li>
               <li><strong>Organizational changes.</strong> Information may be transferred in connection with a reorganization of the student organization or its programs.</li>
             </ul>
@@ -1385,7 +1419,7 @@ function PrivacyPage() {
             <p>Our service providers may store and process information in the United States and other countries that may have data protection laws different from those in your jurisdiction. Where required, we rely on appropriate safeguards, such as standard contractual clauses, to protect information transferred internationally.</p>
 
             <h2>Data Retention</h2>
-            <p>We keep personal information only for as long as necessary for the purposes described in this Policy. Newsletter email addresses are retained until you unsubscribe; contact correspondence is kept as long as needed to address your request; and member account information is retained for the duration of your membership and a reasonable period afterward, unless a longer period is required by law.</p>
+            <p>We keep personal information only for as long as necessary for the purposes described in this Policy. Contact correspondence is kept as long as needed to address your request; and member account information is retained for the duration of your membership and a reasonable period afterward, unless a longer period is required by law.</p>
 
             <h2>Data Security</h2>
             <p>We use reasonable technical and organizational measures to protect personal information against unauthorized access, loss, or misuse. No method of transmission or storage is completely secure, however, and we cannot guarantee absolute security.</p>
@@ -1462,48 +1496,6 @@ function FaqSection() {
             </article>
           ))}
         </div>
-      </div>
-    </section>
-  );
-}
-
-function NewsletterSection() {
-  const [status, setStatus] = useState('idle'); // idle | sending | done | error
-  const [errorMessage, setErrorMessage] = useState('');
-
-  async function handleSubmit(event) {
-    event.preventDefault();
-    const email = event.currentTarget.elements['newsletter-email'].value.trim();
-    setStatus('sending');
-    try {
-      const { data, error } = await supabase.functions.invoke('subscribe', { body: { email } });
-      if (error || data?.error) {
-        setErrorMessage(data?.error || 'Something went wrong. Please try again.');
-        setStatus('error');
-      } else {
-        setStatus('done');
-      }
-    } catch {
-      setErrorMessage('Something went wrong. Please try again.');
-      setStatus('error');
-    }
-  }
-
-  return (
-    <section className="section section-dark">
-      <div className="container container-narrow">
-        <SectionHeader label="Stay Updated" title="Follow Mission Progress" subtitle="Get launch announcements, mission results, and program news from the LIFTS team." />
-        <form className="newsletter-form" onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label className="form-label" htmlFor="newsletter-email">Email</label>
-            <input className="form-input" id="newsletter-email" type="email" required disabled={status === 'done'} />
-          </div>
-          {status === 'done' ? <p className="form-success">You're on the list. Thanks for following LIFTS!</p> : null}
-          {status === 'error' ? <p className="form-error">{errorMessage}</p> : null}
-          <button className="btn btn-primary" type="submit" disabled={status === 'sending' || status === 'done'}>
-            {status === 'sending' ? 'Signing you up…' : status === 'done' ? 'Subscribed' : 'Register Interest'}
-          </button>
-        </form>
       </div>
     </section>
   );

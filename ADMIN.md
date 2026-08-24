@@ -40,32 +40,13 @@ that table with approved Puerto Rico network ranges before enabling open signup.
   their own page at `/<slug>` and show up on the Missions, Launches, and home pages
 - **Site Info** — organization text, stats, team count, programs, open roles,
   contributors/sponsor logos, FAQ, social links, contact emails
-- **Gallery** — photos shown on the Updates page (uploads go to Supabase Storage)
+- **Gallery** — photos shown in the homepage carousel and Updates page (uploads go to Supabase Storage)
 
 ## Approval flow
 
 Editors hit **"Submit for Approval"**; the change sits in the **Approvals** tab until
 an admin approves (publishes it) or rejects it. Admins see **"Save & Publish"** and go live
 immediately.
-
-## Newsletter signups
-
-The "Register Interest" form on the Updates page calls the `subscribe` Supabase Edge
-Function, which stores the email in the `newsletter_subscribers` table and adds it to
-the Resend audience. This requires two secrets under **Edge Functions → Secrets** in
-the Supabase dashboard:
-
-- `RESEND_API_KEY` — a Resend API key with full access (contacts + sending)
-- `RESEND_AUDIENCE_ID` — from resend.com → Audiences → your audience → ID
-
-If the secrets are missing, signups are still saved to the database
-(`synced_to_resend = false`) so no subscriber is ever lost.
-
-Admins send newsletters from the panel's **Newsletter** tab: write a subject and
-message, and it goes to every active subscriber in the LIFTS email template with an
-automatic unsubscribe link (via the `broadcast` edge function). The sender address
-defaults to `LIFTS <noreply@auth.liftspr.org>`; override it with a `RESEND_FROM`
-secret if you verify a nicer address (e.g. `news@liftspr.org`).
 
 ## Notes & limits
 

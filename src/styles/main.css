@@ -743,56 +743,6 @@ img.hero-title {
     margin-bottom: var(--spacing-lg);
 }
 
-.featured-event-meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--spacing-xl);
-    margin-bottom: var(--spacing-xl);
-}
-
-.featured-event-meta-item {
-    display: flex;
-    flex-direction: column;
-}
-
-.featured-event-meta-label {
-    font-size: var(--text-xs);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--color-text-muted);
-    margin-bottom: var(--spacing-xs);
-}
-
-.featured-event-meta-value {
-    font-family: var(--font-bold);
-    font-size: var(--text-lg);
-}
-
-/* Countdown Timer */
-.countdown {
-    display: flex;
-    gap: var(--spacing-lg);
-    margin-bottom: var(--spacing-xl);
-}
-
-.countdown-item {
-    text-align: center;
-}
-
-.countdown-value {
-    font-family: var(--font-bold);
-    font-size: var(--text-4xl);
-    line-height: 1;
-}
-
-.countdown-label {
-    font-size: var(--text-xs);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--color-text-muted);
-    margin-top: var(--spacing-xs);
-}
-
 .featured-event-image {
     position: relative;
     aspect-ratio: 16/10;
@@ -803,6 +753,87 @@ img.hero-title {
     width: 100%;
     height: 100%;
     object-fit: cover;
+}
+
+.featured-event-description {
+    max-width: 600px;
+    margin-bottom: var(--spacing-xl);
+    font-size: var(--text-lg);
+    color: var(--color-text-secondary);
+}
+
+.photo-carousel {
+    background: var(--color-bg-tertiary);
+}
+
+.photo-carousel-caption {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: var(--spacing-xl) var(--spacing-lg) var(--spacing-lg);
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.85), transparent);
+    color: var(--color-text-primary);
+}
+
+.photo-carousel-control {
+    position: absolute;
+    top: 50%;
+    z-index: 1;
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    color: var(--color-text-primary);
+    background: rgba(0, 0, 0, 0.55);
+    font-size: var(--text-3xl);
+    line-height: 1;
+    transform: translateY(-50%);
+}
+
+.photo-carousel-control:hover,
+.photo-carousel-control:focus-visible {
+    background: rgba(0, 0, 0, 0.85);
+}
+
+.photo-carousel-control-prev {
+    left: var(--spacing-md);
+}
+
+.photo-carousel-control-next {
+    right: var(--spacing-md);
+}
+
+.photo-carousel-dots {
+    position: absolute;
+    right: 0;
+    bottom: var(--spacing-md);
+    left: 0;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-sm);
+}
+
+.photo-carousel-dot {
+    width: 0.65rem;
+    height: 0.65rem;
+    border: 1px solid var(--color-text-primary);
+    border-radius: 50%;
+    background: transparent;
+}
+
+.photo-carousel-dot.active,
+.photo-carousel-dot:hover,
+.photo-carousel-dot:focus-visible {
+    background: var(--color-text-primary);
+}
+
+.photo-carousel > p:not(.photo-carousel-caption) {
+    display: grid;
+    height: 100%;
+    place-items: center;
+    color: var(--color-text-muted);
 }
 
 /* ---------- Stats Section ---------- */
@@ -1328,10 +1359,6 @@ main {
         gap: var(--spacing-xl);
     }
     
-    .countdown {
-        justify-content: center;
-    }
-    
     .footer-grid {
         grid-template-columns: 1fr;
         gap: var(--spacing-2xl);
@@ -1388,14 +1415,6 @@ main {
         flex: 0 0 280px;
     }
     
-    .countdown {
-        gap: var(--spacing-md);
-    }
-    
-    .countdown-value {
-        font-size: var(--text-2xl);
-    }
-
     /* Smaller hero logo on small phones */
     .hero .logo img {
         height: 40px;
@@ -1467,11 +1486,6 @@ main {
 
 .faq-answer a:hover {
     color: var(--color-accent-hover);
-}
-
-/* ---------- Newsletter Form ---------- */
-.newsletter-form .form-input {
-    background: var(--color-bg-secondary);
 }
 
 /* ---------- Print Styles ---------- */
