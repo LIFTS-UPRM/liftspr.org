@@ -1,0 +1,222 @@
+{
+  ".claude/launch.json": {
+    "mtime": 1782777687.8822927,
+    "ast_hash": "a50ab9b62fffa9657ffe7378119fdb60",
+    "semantic_hash": "a50ab9b62fffa9657ffe7378119fdb60"
+  },
+  ".vscode/launch.json": {
+    "mtime": 1781208332.9613187,
+    "ast_hash": "90e4f39d04ffa5ce339e0fd47eadcf8d",
+    "semantic_hash": "90e4f39d04ffa5ce339e0fd47eadcf8d"
+  },
+  "package.json": {
+    "mtime": 1781585499.637011,
+    "ast_hash": "35429877d94ca97d1548ca0c30512ce3",
+    "semantic_hash": "35429877d94ca97d1548ca0c30512ce3"
+  },
+  "scripts/generate-seo-pages.cjs": {
+    "mtime": 1782773077.5253396,
+    "ast_hash": "5b8e846668aaf1f3a063845725c91841",
+    "semantic_hash": "5b8e846668aaf1f3a063845725c91841"
+  },
+  "scripts/verify-auth-hook-sql.mjs": {
+    "mtime": 1783561652.8668807,
+    "ast_hash": "f321bb6495ed8e6854d1eb9341e5aacc",
+    "semantic_hash": "f321bb6495ed8e6854d1eb9341e5aacc"
+  },
+  "scripts/verify-deploy-workflow.mjs": {
+    "mtime": 1782916683.9719157,
+    "ast_hash": "3f97c58ac7bd1e08c7869ef33a8438c9",
+    "semantic_hash": "3f97c58ac7bd1e08c7869ef33a8438c9"
+  },
+  "scripts/verify-frame-guard.mjs": {
+    "mtime": 1782875598.696262,
+    "ast_hash": "7fa230e3ffc1371a2ba036c040e311c7",
+    "semantic_hash": "7fa230e3ffc1371a2ba036c040e311c7"
+  },
+  "src/admin/AdminApp.jsx": {
+    "mtime": 1783561652.8674145,
+    "ast_hash": "520c384fd7c10b5cefe8fdf84a698e59",
+    "semantic_hash": "520c384fd7c10b5cefe8fdf84a698e59"
+  },
+  "src/admin/authGuards.js": {
+    "mtime": 1783561652.8677719,
+    "ast_hash": "872c67c6663e5dcf56cc963b48f2acaa",
+    "semantic_hash": "872c67c6663e5dcf56cc963b48f2acaa"
+  },
+  "src/admin/authGuards.test.mjs": {
+    "mtime": 1783561652.8680272,
+    "ast_hash": "8c39721d2b41d819a948c2f956981293",
+    "semantic_hash": "8c39721d2b41d819a948c2f956981293"
+  },
+  "src/data/siteData.json": {
+    "mtime": 1781585020.186548,
+    "ast_hash": "75d79d342538f563c7fa6b8c93d2a8b8",
+    "semantic_hash": "75d79d342538f563c7fa6b8c93d2a8b8"
+  },
+  "src/lib/content.jsx": {
+    "mtime": 1781208088.8058589,
+    "ast_hash": "7e3797f3b8441dacda6e5d0f9cc408c4",
+    "semantic_hash": "7e3797f3b8441dacda6e5d0f9cc408c4"
+  },
+  "src/lib/supabaseClient.js": {
+    "mtime": 1781208078.0986693,
+    "ast_hash": "fe4eab6a17112ba9a73cf0e1f415887f",
+    "semantic_hash": "fe4eab6a17112ba9a73cf0e1f415887f"
+  },
+  "src/main.jsx": {
+    "mtime": 1782875598.6963487,
+    "ast_hash": "e4ade332ebe893dc66236e0ba95ff774",
+    "semantic_hash": "e4ade332ebe893dc66236e0ba95ff774"
+  },
+  "supabase/migrations/20260703000000_enforce_account_creation_rules.sql": {
+    "mtime": 1783561652.8686824,
+    "ast_hash": "08984f65c796bbe7a71dc544f4baa600",
+    "semantic_hash": "08984f65c796bbe7a71dc544f4baa600"
+  },
+  "vite.config.js": {
+    "mtime": 1780872859.9872265,
+    "ast_hash": "2b17006f2d76d9c144aa471a84b408c1",
+    "semantic_hash": "2b17006f2d76d9c144aa471a84b408c1"
+  },
+  ".github/workflows/deploy.yml": {
+    "mtime": 1782916664.6871116,
+    "ast_hash": "8f095abc818320a4411d79bb26e15b43",
+    "semantic_hash": "8f095abc818320a4411d79bb26e15b43"
+  },
+  "ADMIN.md": {
+    "mtime": 1783561652.8665204,
+    "ast_hash": "fa13f7625bcd522969b0d4c5a4a250ef",
+    "semantic_hash": "fa13f7625bcd522969b0d4c5a4a250ef"
+  },
+  "README.md": {
+    "mtime": 1780873156.4659152,
+    "ast_hash": "98586cdc5d09a64a91a773d021fc6df6",
+    "semantic_hash": "98586cdc5d09a64a91a773d021fc6df6"
+  },
+  "index.html": {
+    "mtime": 1782773077.519584,
+    "ast_hash": "5a1412c113f5ffc45d7ed52f07782612",
+    "semantic_hash": "5a1412c113f5ffc45d7ed52f07782612"
+  },
+  "public/404.html": {
+    "mtime": 1782875598.69617,
+    "ast_hash": "32eca0ca758e8628f6ef9ccb333498d3",
+    "semantic_hash": "32eca0ca758e8628f6ef9ccb333498d3"
+  },
+  "public/assets/documents/brand-guidelines.md": {
+    "mtime": 1782773077.525328,
+    "ast_hash": "a30741fb0c84d10cfd039a01648983c7",
+    "semantic_hash": "a30741fb0c84d10cfd039a01648983c7"
+  },
+  "public/assets/documents/fact-sheet.md": {
+    "mtime": 1781585030.400954,
+    "ast_hash": "a7429a4612572943f169df64e6c0023e",
+    "semantic_hash": "a7429a4612572943f169df64e6c0023e"
+  },
+  "public/assets/documents/press-kit.md": {
+    "mtime": 1782773077.525316,
+    "ast_hash": "d8970d30c8e0588f28c9056cd796d2e7",
+    "semantic_hash": "d8970d30c8e0588f28c9056cd796d2e7"
+  },
+  "public/assets/email/confirm-signup.html": {
+    "mtime": 1782772970.8665736,
+    "ast_hash": "21d53c231df2cfd09f91c3f03e711377",
+    "semantic_hash": "21d53c231df2cfd09f91c3f03e711377"
+  },
+  "public/robots.txt": {
+    "mtime": 1781585043.111581,
+    "ast_hash": "ca04f2cde7d8d59f4bafb7bff1f8f33a",
+    "semantic_hash": "ca04f2cde7d8d59f4bafb7bff1f8f33a"
+  },
+  "public/images/backgrounds/hero-launch.svg": {
+    "mtime": 1780719990.913215,
+    "ast_hash": "7bc37356f647ba9b1e432ceff4080772",
+    "semantic_hash": "7bc37356f647ba9b1e432ceff4080772"
+  },
+  "public/images/backgrounds/hero-space.svg": {
+    "mtime": 1780719990.9133465,
+    "ast_hash": "e73fd6e288d8268d49afc35f714a4ad5",
+    "semantic_hash": "e73fd6e288d8268d49afc35f714a4ad5"
+  },
+  "public/images/contributors-logos/Collins Aerospace.svg": {
+    "mtime": 1780719990.9136486,
+    "ast_hash": "6a59305fbf006e83c744e6510e321b47",
+    "semantic_hash": "6a59305fbf006e83c744e6510e321b47"
+  },
+  "public/images/contributors-logos/NEBP logo alternate2 1703x1657.png": {
+    "mtime": 1780719990.9149816,
+    "ast_hash": "b0290d354dff6d7523fdc046232af406",
+    "semantic_hash": "b0290d354dff6d7523fdc046232af406"
+  },
+  "public/images/contributors-logos/Puerto Rico Space Grant Consortium.png": {
+    "mtime": 1780719990.9163287,
+    "ast_hash": "35da0df73a36bea57a7affa6a8922e06",
+    "semantic_hash": "35da0df73a36bea57a7affa6a8922e06"
+  },
+  "public/images/contributors-logos/logo-montana-state-u.png": {
+    "mtime": 1780719990.9172938,
+    "ast_hash": "7a3ea93a3bb1d4d2516db463f7a86482",
+    "semantic_hash": "7a3ea93a3bb1d4d2516db463f7a86482"
+  },
+  "public/images/contributors-logos/seal-rum-uprm.svg": {
+    "mtime": 1780719990.918444,
+    "ast_hash": "d0a3f4e3de892c7a01dd5b9af140c661",
+    "semantic_hash": "d0a3f4e3de892c7a01dd5b9af140c661"
+  },
+  "public/images/logo/LIFTS-con-nombre-blanco.png": {
+    "mtime": 1782772885.9444313,
+    "ast_hash": "39159c98a2a78648eca823a550c06ff0",
+    "semantic_hash": "39159c98a2a78648eca823a550c06ff0"
+  },
+  "public/images/logo/LIFTS-con-nombre-negro.png": {
+    "mtime": 1782772885.9754648,
+    "ast_hash": "68267fbe66420a0bd6e81b6d3ef4c4c4",
+    "semantic_hash": "68267fbe66420a0bd6e81b6d3ef4c4c4"
+  },
+  "public/images/logo/Lifts-logo-black-sin-nombre.png": {
+    "mtime": 1782772885.9808836,
+    "ast_hash": "77339f51f7e8ea435c7fa80f947ac6ad",
+    "semantic_hash": "77339f51f7e8ea435c7fa80f947ac6ad"
+  },
+  "public/images/logo/Lifts-logo-white-sin-nombre.png": {
+    "mtime": 1782772885.9913619,
+    "ast_hash": "6427782eb8c0693dadeee2c2d1732869",
+    "semantic_hash": "6427782eb8c0693dadeee2c2d1732869"
+  },
+  "public/images/logo/Logo-con-background.jpg": {
+    "mtime": 1782772886.1055546,
+    "ast_hash": "eb1d008dd5e0fb34d1f6e42e9c9ff462",
+    "semantic_hash": "eb1d008dd5e0fb34d1f6e42e9c9ff462"
+  },
+  "public/images/logo/Logo.png": {
+    "mtime": 1782772886.1246762,
+    "ast_hash": "1ecbdc178dc7e14f519c6784298eb513",
+    "semantic_hash": "1ecbdc178dc7e14f519c6784298eb513"
+  },
+  "public/images/logo/Nexo-sticker.png": {
+    "mtime": 1782772886.1689193,
+    "ast_hash": "01be0af3171f78774e1adfaca5aaaee4",
+    "semantic_hash": "01be0af3171f78774e1adfaca5aaaee4"
+  },
+  "public/images/logo/lifts-icon.svg": {
+    "mtime": 1780719990.919249,
+    "ast_hash": "0b03677ccf0ffdac4721c473b3fc96a5",
+    "semantic_hash": "0b03677ccf0ffdac4721c473b3fc96a5"
+  },
+  "public/images/logo/lifts-logo-dark.svg": {
+    "mtime": 1780719990.921036,
+    "ast_hash": "b2bb86aeee4e0abf7e2560b7e1960146",
+    "semantic_hash": "b2bb86aeee4e0abf7e2560b7e1960146"
+  },
+  "public/images/logo/lifts-logo-white.svg": {
+    "mtime": 1780719990.921259,
+    "ast_hash": "83c190343c96d1a9d45347f1935f00ff",
+    "semantic_hash": "83c190343c96d1a9d45347f1935f00ff"
+  },
+  "public/images/logo/lifts-logo.svg": {
+    "mtime": 1780719990.9214737,
+    "ast_hash": "f2e092850ced7683a73dd4f2bad71452",
+    "semantic_hash": "f2e092850ced7683a73dd4f2bad71452"
+  }
+}

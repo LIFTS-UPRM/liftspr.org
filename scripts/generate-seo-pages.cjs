@@ -44,7 +44,7 @@ const routes = [
     changefreq: 'weekly',
   },
   {
-    path: '/careers',
+    path: '/join-us',
     title: 'Join the LIFTS Team | Student Aerospace Roles at UPRM',
     description: 'Students can join LIFTS as payload engineers, flight software developers, operations coordinators, and outreach contributors.',
     heading: 'Join the LIFTS Team',

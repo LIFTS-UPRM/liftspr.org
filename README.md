@@ -19,7 +19,7 @@ Editable site information lives in:
 src/data/siteData.json
 ```
 
-Use that file to update mission dates, stats, contact emails, launch entries, contributor logos, career roles, updates, FAQs, and document links. The old Python placeholder generator has been removed.
+Use that file to update mission dates, stats, contact emails, launch entries, contributor logos, Join Us roles, updates, FAQs, and document links. The old Python placeholder generator has been removed.
 
 Static public assets live under:
 
@@ -40,7 +40,7 @@ The React app uses clean routes:
 | Missions | `/missions` |
 | Launches | `/launches` |
 | Updates | `/updates` |
-| Careers | `/careers` |
+| Join Us | `/join-us` |
 | About | `/about` |
 | Contact | `/contact` |
 | Contributors | `/contributors` |

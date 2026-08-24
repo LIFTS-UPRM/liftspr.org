@@ -39,7 +39,7 @@ const navItems = [
   { label: 'Missions', path: '/missions' },
   { label: 'Launches', path: '/launches' },
   { label: 'Updates', path: '/updates' },
-  { label: 'Careers', path: '/careers' },
+  { label: 'Join Us', path: '/join-us' },
   { label: 'About', path: '/about' },
   { label: 'Contact', path: '/contact' },
 ];
@@ -74,12 +74,12 @@ const routes = [
     component: UpdatesPage,
   },
   {
-    path: '/careers',
-    aliases: ['/careers.html'],
+    path: '/join-us',
+    aliases: ['/join-us.html', '/careers', '/careers.html'],
     title: 'Join the LIFTS Team | Student Aerospace Roles at UPRM',
     description: 'Students can join LIFTS as payload engineers, flight software developers, operations coordinators, and outreach contributors.',
     faq: true,
-    component: CareersPage,
+    component: JoinUsPage,
   },
   {
     path: '/about',
@@ -1054,12 +1054,12 @@ function UpdatesPage() {
   );
 }
 
-function CareersPage() {
+function JoinUsPage() {
   const siteData = useSiteData();
   return (
     <>
       <PageHero
-        label="Careers"
+        label="Join Us"
         title="Join the Team"
         subtitle="LIFTS needs students who want to build, test, document, operate, and communicate real aerospace missions."
       />
