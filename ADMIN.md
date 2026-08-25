@@ -38,8 +38,9 @@ that table with approved Puerto Rico network ranges before enabling open signup.
 - **Posts** — news/updates shown on the Updates page (title, category, date, summary, body, image)
 - **Missions** — add new missions or edit existing ones; new missions automatically get
   their own page at `/<slug>` and show up on the Missions, Launches, and home pages
-- **Site Info** — organization text, stats, team count, programs, open roles,
-  contributors/sponsor logos, FAQ, social links, contact emails
+- **Site Info** — homepage copy, organization text, stats, team count, launch schedule,
+  programs, open roles, contributors/sponsor logos, FAQ, social links, contact emails,
+  and contributor documents
 - **Gallery** — photos shown in the homepage carousel and Updates page (uploads go to Supabase Storage)
 
 ## Approval flow
@@ -52,6 +53,10 @@ immediately.
 
 - The site always falls back to the content bundled in `src/data/siteData.json`
   if the database is unreachable, so it never renders blank.
+- The content schema, RLS policies, media bucket, first-admin profile trigger, and
+  starter homepage/gallery content are tracked in
+  `supabase/migrations/20260824000000_content_admin_schema.sql`. Apply migrations
+  before using a fresh Supabase project.
 - Supabase's built-in email service only sends a few confirmation emails per hour.
   If a teammate's confirmation email doesn't arrive, wait an hour, or an admin can
   confirm them manually from the Supabase dashboard (Authentication → Users), or

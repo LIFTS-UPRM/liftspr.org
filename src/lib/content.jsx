@@ -16,7 +16,7 @@ export function ContentProvider({ children }) {
       try {
         const [sections, missions, posts, gallery] = await Promise.all([
           supabase.from('site_content').select('key, data'),
-          supabase.from('missions').select('slug, name, status, sort_order, data').order('sort_order'),
+          supabase.from('missions').select('slug, name, sort_order, data').order('sort_order'),
           supabase.from('posts').select('*').order('published_at', { ascending: false }),
           supabase.from('gallery').select('*').order('sort_order'),
         ]);
@@ -31,16 +31,16 @@ export function ContentProvider({ children }) {
           }
         }
 
-        if (!missions.error && missions.data?.length) {
+        if (!missions.error) {
           const missionMap = {};
-          for (const row of missions.data) {
-            missionMap[row.slug] = { ...row.data, slug: row.slug, name: row.name, status: row.status };
+          for (const row of missions.data || []) {
+            missionMap[row.slug] = { ...row.data, slug: row.slug, name: row.name };
           }
           merged.missions = missionMap;
         }
 
-        if (!posts.error && posts.data?.length) {
-          merged.updates = posts.data.map((post) => ({
+        if (!posts.error) {
+          merged.updates = (posts.data || []).map((post) => ({
             id: post.id,
             title: post.title,
             category: post.category,
@@ -51,9 +51,9 @@ export function ContentProvider({ children }) {
           }));
         }
 
-        if (!gallery.error && gallery.data?.length) {
-          merged.gallery = gallery.data;
-          merged.home_gallery = gallery.data;
+        if (!gallery.error) {
+          merged.gallery = gallery.data || [];
+          if (gallery.data?.length) merged.home_gallery = gallery.data;
         }
 
         setContent(merged);

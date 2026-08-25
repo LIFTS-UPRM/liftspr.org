@@ -580,9 +580,8 @@ function MissionCard({ mission }) {
         <img src={mission.image} alt={`${mission.name} mission`} />
       </div>
       <div className="card-content">
-        <span className={`status-tag status-${mission.status}`}>{mission.status_display || mission.status}</span>
         <h3 className="card-title">{mission.name}</h3>
-        <p className="card-label">{mission.date_display || mission.status_display} {mission.location ? `• ${mission.location}` : ''}</p>
+        <p className="card-label">{mission.date_display} {mission.location ? `• ${mission.location}` : ''}</p>
         <p className="card-description">{mission.summary}</p>
         <Link to={`/${mission.slug}`} className="btn btn-ghost">View Mission</Link>
       </div>
@@ -690,7 +689,7 @@ function HomePage() {
           <SectionHeader
             label={homepage.mission_label || 'Our Work'}
             title={homepage.mission_title || 'Mission Highlights'}
-            subtitle={homepage.mission_subtitle || 'Explore completed, upcoming, and in-progress missions pushing the boundaries of student-led near-space research.'}
+            subtitle={homepage.mission_subtitle || 'Explore student-led near-space missions pushing the boundaries of aerospace research.'}
           />
           <div className="scroll-container">
             {missions.map((mission) => (
@@ -759,7 +758,18 @@ function WhatIsLiftsSection() {
   const siteData = useSiteData();
   const intro = siteData.home_intro || {};
   const homepage = siteData.homepage || {};
-  const photos = siteData.home_gallery || siteData.gallery || [];
+  const missionPhotos = Object.values(siteData.missions || {})
+    .filter((mission) => mission.image)
+    .map((mission) => ({
+      title: `${mission.name} Mission`,
+      caption: mission.summary,
+      image_url: mission.image,
+    }));
+  const photos = siteData.home_gallery?.length
+    ? siteData.home_gallery
+    : siteData.gallery?.length
+      ? siteData.gallery
+      : missionPhotos;
 
   return (
     <section className="featured-event" id="whatIsLifts">
@@ -808,8 +818,12 @@ function PhotoCarousel({ photos }) {
       aria-label="LIFTS photos"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
+      onFocus={() => setPaused(true)}
+      onBlur={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget)) setPaused(false);
+      }}
     >
-      <img src={slide.image_url} alt={slide.title || 'LIFTS mission photo'} />
+      <img key={slide.image_url} src={slide.image_url} alt={slide.title || 'LIFTS mission photo'} />
       {slide.caption ? <p className="photo-carousel-caption">{slide.caption}</p> : null}
       {showControls ? (
         <>
@@ -850,9 +864,7 @@ function PhotoCarousel({ photos }) {
 
 function MissionsPage() {
   const siteData = useSiteData();
-  const [filter, setFilter] = useState('all');
   const missions = Object.values(siteData.missions);
-  const filtered = filter === 'all' ? missions : missions.filter((mission) => mission.status === filter);
 
   return (
     <>
@@ -863,15 +875,8 @@ function MissionsPage() {
       />
       <section className="section">
         <div className="container">
-          <div className="filter-bar">
-            {['all', 'completed', 'upcoming', 'in-progress'].map((value) => (
-              <button key={value} className={`filter-btn ${filter === value ? 'active' : ''}`} onClick={() => setFilter(value)}>
-                {value === 'all' ? 'All' : value.replace('-', ' ')}
-              </button>
-            ))}
-          </div>
           <div className="grid grid-3">
-            {filtered.map((mission) => (
+            {missions.map((mission) => (
               <MissionCard mission={mission} key={mission.slug} />
             ))}
           </div>
@@ -943,7 +948,6 @@ function MissionDetailPage({ missionId }) {
         <div className="container">
           <div className="grid grid-2 mission-detail-grid">
             <div>
-              <span className={`status-tag status-${mission.status}`}>{mission.status_display || mission.status}</span>
               <h2 className="section-title mission-title">{mission.name}</h2>
               <p className="section-subtitle mission-summary">{mission.summary}</p>
               <div className="hero-actions mission-actions">
@@ -1181,7 +1185,7 @@ function AnswerSection() {
     },
     {
       question: 'What missions does LIFTS work on?',
-      answer: 'LIFTS works on high-altitude balloon missions, mission operations, payload development, and CubeSat research. Current programs include the completed NEXO eclipse balloon flight, the upcoming ASCENT Puerto Rico balloon mission, and a long-range 1U CubeSat development path.',
+      answer: 'LIFTS works on high-altitude balloon missions, mission operations, payload development, and CubeSat research. Current programs include NEXO, ASCENT, and a long-range 1U CubeSat development path.',
     },
     {
       question: 'How can students, sponsors, or collaborators connect with LIFTS?',

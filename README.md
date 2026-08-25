@@ -13,7 +13,8 @@ The local dev server runs on port `3000` by default.
 
 ## Content Editing
 
-Editable site information lives in:
+The preferred content editor is the built-in admin panel at `/admin`. It writes
+approved content to Supabase; `src/data/siteData.json` remains the offline fallback:
 
 ```text
 src/data/siteData.json

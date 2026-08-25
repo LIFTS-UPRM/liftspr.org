@@ -25,7 +25,7 @@
     "about_cta": "Learn More About LIFTS",
     "mission_label": "Our Work",
     "mission_title": "Mission Highlights",
-    "mission_subtitle": "Explore completed, upcoming, and in-progress missions pushing the boundaries of student-led near-space research.",
+    "mission_subtitle": "Explore student-led near-space missions pushing the boundaries of aerospace research.",
     "mission_cta": "View All Missions",
     "supporters_label": "Our Supporters",
     "supporters_title": "Partners & Sponsors",
@@ -40,7 +40,7 @@
       },
       {
         "question": "What missions does LIFTS work on?",
-        "answer": "LIFTS works on high-altitude balloon missions, mission operations, payload development, and CubeSat research. Current programs include the completed NEXO eclipse balloon flight, the upcoming ASCENT Puerto Rico balloon mission, and a long-range 1U CubeSat development path."
+        "answer": "LIFTS works on high-altitude balloon missions, mission operations, payload development, and CubeSat research. Current programs include NEXO, ASCENT, and a long-range 1U CubeSat development path."
       },
       {
         "question": "How can students, sponsors, or collaborators connect with LIFTS?",
@@ -84,8 +84,6 @@
       "slug": "nexo",
       "name": "NEXO",
       "full_name": "Space Navigator for Exploration and Observation",
-      "status": "completed",
-      "status_display": "Completed",
       "date": "2024-04-08",
       "date_display": "April 8, 2024",
       "date_month": "APR",
@@ -119,8 +117,6 @@
       "slug": "ascent",
       "name": "ASCENT",
       "full_name": "Advanced Science Carrier for Environmental and Near-space Technology",
-      "status": "upcoming",
-      "status_display": "Upcoming",
       "date": "2026-03-14",
       "date_display": "March 14, 2026",
       "date_iso": "2026-03-14T00:00:00",
@@ -153,8 +149,6 @@
     "cubesat": {
       "slug": "cubesat",
       "name": "CubeSat Program",
-      "status": "in-progress",
-      "status_display": "In Progress",
       "form_factor": "1U CubeSat",
       "dimensions": "10x10x10 cm",
       "mass": "<1.33 kg",

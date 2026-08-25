@@ -4,12 +4,6 @@ import { requestPuertoRicoLocation, signupEmailError } from './authGuards';
 import fallbackData from '../data/siteData.json';
 import '../styles/admin.css';
 
-const STATUS_DISPLAY = {
-  completed: 'Completed',
-  upcoming: 'Upcoming',
-  'in-progress': 'In Progress',
-};
-
 const POST_CATEGORIES = ['Mission Update', 'Program Update', 'Flight Result', 'Announcement', 'Outreach'];
 
 const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
@@ -83,10 +77,13 @@ const SECTIONS = [
     fields: [
       { name: 'name', label: 'Short Name' },
       { name: 'full_name', label: 'Full Name' },
+      { name: 'type', label: 'Organization Type' },
       { name: 'tagline', label: 'Tagline (homepage hero)', type: 'textarea' },
       { name: 'description', label: 'Description (footer & about)', type: 'textarea' },
       { name: 'institution', label: 'Institution' },
+      { name: 'institution_short', label: 'Institution Short Name' },
       { name: 'email', label: 'Email' },
+      { name: 'website', label: 'Website' },
       { name: 'founded', label: 'Founded' },
     ],
   },
@@ -160,6 +157,7 @@ const SECTIONS = [
       { name: 'instagram_url', label: 'Instagram URL' },
       { name: 'linkedin_url', label: 'LinkedIn URL' },
       { name: 'youtube_url', label: 'YouTube URL' },
+      { name: 'twitter', label: 'X/Twitter Handle' },
       { name: 'instagram', label: 'Instagram Handle' },
       { name: 'linkedin', label: 'LinkedIn Name' },
       { name: 'youtube', label: 'YouTube Name' },
@@ -762,7 +760,7 @@ function DashboardTab({ profile, isAdmin, counts, setTab }) {
         </button>
         <button className="admin-quick" onClick={() => setTab('missions')}>
           <Icon name="missions" /><span>Update a mission</span>
-          <small>Status, dates, specs, results</small>
+          <small>Dates, specs, results</small>
         </button>
         <button className="admin-quick" onClick={() => setTab('site')}>
           <Icon name="site" /><span>Edit site info</span>
@@ -902,6 +900,7 @@ function PostsTab({ save, isAdmin, notify }) {
 // ---------------------------------------------------------------------------
 // Missions
 // ---------------------------------------------------------------------------
+// Ignore legacy status fields so editing pre-migration rows cannot re-save them.
 const MISSION_KNOWN_KEYS = [
   'slug', 'name', 'full_name', 'status', 'status_display', 'date', 'date_display', 'date_iso',
   'date_month', 'date_day', 'date_year', 'location', 'location_full', 'summary', 'image',
@@ -929,8 +928,6 @@ function MissionsTab({ save, isAdmin, notify }) {
       slug,
       name: values.name,
       full_name: values.full_name,
-      status: values.status,
-      status_display: STATUS_DISPLAY[values.status] || values.status,
       ...deriveDateFields(values.date),
       location: values.location,
       location_full: values.location_full || values.location,
@@ -943,7 +940,7 @@ function MissionsTab({ save, isAdmin, notify }) {
       target_type: 'mission',
       target_key: isNew ? null : editing.slug,
       action: isNew ? 'create' : 'update',
-      payload: { slug, name: values.name, status: values.status, sort_order: Number(values.sort_order) || 0, data },
+      payload: { slug, name: values.name, sort_order: Number(values.sort_order) || 0, data },
       summary: `${isNew ? 'New mission' : 'Edit mission'}: ${values.name}`,
     });
     setEditing(null);
@@ -968,7 +965,6 @@ function MissionsTab({ save, isAdmin, notify }) {
       slug: mission.slug,
       name: mission.name,
       full_name: mission.data?.full_name,
-      status: mission.status || 'upcoming',
       date: mission.data?.date,
       location: mission.data?.location,
       location_full: mission.data?.location_full,
@@ -992,7 +988,6 @@ function MissionsTab({ save, isAdmin, notify }) {
           { name: 'name', label: 'Mission Name', required: true },
           { name: 'full_name', label: 'Full Name (acronym expansion)' },
           { name: 'slug', label: 'URL slug (e.g. "ascent" → site.com/ascent)' },
-          { name: 'status', label: 'Status', type: 'select', options: Object.keys(STATUS_DISPLAY) },
           { name: 'date', label: 'Date', type: 'date' },
           { name: 'location', label: 'Location (short)' },
           { name: 'location_full', label: 'Location (full)' },
@@ -1018,7 +1013,7 @@ function MissionsTab({ save, isAdmin, notify }) {
           <div className="admin-row" key={mission.id}>
             <div>
               <strong>{mission.name}</strong>
-              <p className="admin-muted">{STATUS_DISPLAY[mission.status] || mission.status} · /{mission.slug}</p>
+              <p className="admin-muted">/{mission.slug}</p>
             </div>
             <div className="admin-row-actions admin-row-actions-separated">
               <button className="admin-btn admin-btn-sm" onClick={() => setEditing(mission)}>Edit</button>
