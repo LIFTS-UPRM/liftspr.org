@@ -833,7 +833,9 @@ function PhotoCarousel({ photos }) {
             aria-label="Previous photo"
             onClick={() => setActive((index) => (index - 1 + slides.length) % slides.length)}
           >
-            ‹
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m15 18-6-6 6-6" />
+            </svg>
           </button>
           <button
             className="photo-carousel-control photo-carousel-control-next"
@@ -841,7 +843,9 @@ function PhotoCarousel({ photos }) {
             aria-label="Next photo"
             onClick={() => setActive((index) => (index + 1) % slides.length)}
           >
-            ›
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m9 18 6-6-6-6" />
+            </svg>
           </button>
           <div className="photo-carousel-dots" role="tablist" aria-label="Choose a photo">
             {slides.map((photo, index) => (

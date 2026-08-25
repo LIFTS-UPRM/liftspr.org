@@ -751,9 +751,17 @@ img.hero-title {
     border-radius: 50%;
     color: var(--color-text-primary);
     background: rgba(0, 0, 0, 0.55);
-    font-size: var(--text-3xl);
-    line-height: 1;
     transform: translateY(-50%);
+}
+
+.photo-carousel-control svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 2;
 }
 
 .photo-carousel-control:hover,
